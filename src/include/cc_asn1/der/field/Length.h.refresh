@@ -1,0 +1,16 @@
+/// @brief Updated refresh functionality
+bool refresh()
+{
+    bool updated = refreshOrig();
+    if (!field_long().doesExist()) {
+        return updated;
+    }
+    
+    auto longLen = field_long().length();
+    if (field_short().field_lenValue().value() == longLen) {
+        return updated;
+    }
+
+    field_short().field_lenValue().setValue(longLen);
+    return true;
+}

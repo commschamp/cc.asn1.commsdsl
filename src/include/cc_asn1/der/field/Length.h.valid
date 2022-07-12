@@ -1,0 +1,13 @@
+/// @brief Field validity check
+bool valid() const
+{
+    if (!Base::valid()) {
+        return false;
+    }
+
+    if (field_long().isMissing()) {
+        return true;
+    }
+
+    return (field_short().field_lenValue().value() == field_long().field().length());
+}

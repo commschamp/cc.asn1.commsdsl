@@ -1,2 +1,2 @@
-# cc_asn1
-Implementation of ASN.1 encodings using CommsChampion Ecosystem
+This is experimental attemt to implement ASN.1 (DER / CER / BER) encodings using
+[CommsChampion Ecosystem](https://commschamp.github.io/).

@@ -1,0 +1,25 @@
+/// @brief Retrieving length value
+std::size_t getValue() const
+{
+    if (field_short().field_flag().getBitValue_longForm()) {
+        return static_cast<std::size_t>(field_long().field().value());
+    }
+
+    return static_cast<std::size_t>(field_short().field_lenValue().value())
+}
+
+/// @brief Setting length value
+void setValue(std::size_t val)
+{
+    if (val <= Field_short::Field_lenValue::valueMaxValue()) {
+        field_short().field_lenValue().setValue(val);
+        field_short().field_flag().setBitValue_longForm(false);
+        field_long().setMissing();
+        return;
+    }
+
+    field_long().setExists();
+    field_long().field().setValue(val);
+    field_short().field_flag().setBitValue_longForm(true);
+    field_short().field_lenValue().setValue(field_long().length());
+}
