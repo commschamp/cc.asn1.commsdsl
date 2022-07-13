@@ -1,6 +1,7 @@
 # Build directories
 build*
 externals
+.vscode
 
 # Prerequisites
 *.d

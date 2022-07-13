@@ -41,62 +41,62 @@ function (test_func name)
         DEPENDS ${output_dir}.tmp "${PROJECT_SOURCE_DIR}/cmake/CopyGenerated.cmake" ${schema_files} ${APP_NAME})
 
 
-#    set (build_tgt ${name}_build_tgt)
-#    set (build_dir ${output_dir}/build)
-#    #set (install_dir ${build_dir}/install)
+    set (build_tgt ${name}_build_tgt)
+    set (build_dir ${output_dir}/build)
+    set (install_dir ${build_dir}/install)
 
-#    execute_process (
-#        COMMAND ${CMAKE_COMMAND} -E make_directory "${build_dir}")
+    execute_process (
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${build_dir}")
 
-#    add_custom_target(${build_tgt} ALL
-#        COMMAND ${CMAKE_COMMAND} -E make_directory "${build_dir}"
-#        COMMAND 
-#            ${CMAKE_COMMAND} 
-#                ${output_dir}
-#                -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-#                -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE} -DCMAKE_GENERATOR=${CMAKE_GENERATOR}
-#                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} 
-#                -DCMAKE_CXX_STANDARD=${CC_ASN1_TESTS_CXX_STANDARD}
-#                -DCMAKE_INSTALL_PREFIX=${install_dir}
-#                -DOPT_REQUIRE_COMMS_LIB=OFF
-#        COMMAND
-#            ${CMAKE_COMMAND} --build ${build_dir} --config ${CMAKE_BUILD_TYPE} --target install
-#        WORKING_DIRECTORY ${build_dir}
-#        DEPENDS ${output_tgt})    
+    add_custom_target(${build_tgt} ALL
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${build_dir}"
+        COMMAND 
+            ${CMAKE_COMMAND} 
+                ${output_dir}
+                -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE} -DCMAKE_GENERATOR=${CMAKE_GENERATOR}
+                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} 
+                -DCMAKE_CXX_STANDARD=${CC_ASN1_TESTS_CXX_STANDARD}
+                -DCMAKE_INSTALL_PREFIX=${install_dir}
+                -DOPT_REQUIRE_COMMS_LIB=OFF
+        COMMAND
+            ${CMAKE_COMMAND} --build ${build_dir} --config ${CMAKE_BUILD_TYPE} --target install
+        WORKING_DIRECTORY ${build_dir}
+        DEPENDS ${output_tgt})    
 
-#    set (tests "${test_dir}/${name}Test.th")
+    set (tests "${test_dir}/${name}Test.th")
 
-#    set (testName "${name}Test")
+    set (testName "${name}Test")
 
-#    set (valgrand_opt)
-#    if (CC_ASN1_VALGRIND_TESTS AND VALGRIND_EXECUTABLE)
-#        set (valgrand_opt VALGRIND_EXECUTABLE ${VALGRIND_EXECUTABLE})
-#    endif ()
+    set (valgrand_opt)
+    if (CC_ASN1_VALGRIND_TESTS AND VALGRIND_EXECUTABLE)
+        set (valgrand_opt VALGRIND_EXECUTABLE ${VALGRIND_EXECUTABLE})
+    endif ()
 
-#    cc_cxxtest_add_test(NAME ${testName} SRC ${tests} ${valgrand_opt})
+    cc_cxxtest_add_test(NAME ${testName} SRC ${tests} ${valgrand_opt})
 
-#    add_dependencies(${testName} ${build_tgt})
-#    target_include_directories (${testName} PRIVATE "${install_dir}/include")
+    add_dependencies(${testName} ${build_tgt})
+    target_include_directories (${testName} PRIVATE "${install_dir}/include")
 
-#    target_compile_options(${testName} PRIVATE
-#        $<$<CXX_COMPILER_ID:MSVC>:/bigobj>
-#        $<$<CXX_COMPILER_ID:GNU>:-Wno-old-style-cast -ftemplate-depth=2048 ${CC_ASN1_SANITIZER_OPTS}>
-#        $<$<CXX_COMPILER_ID:Clang>:-Wno-old-style-cast -ftemplate-depth=2048 ${CC_ASN1_SANITIZER_OPTS}>
-#    )    
+    target_compile_options(${testName} PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/bigobj>
+        $<$<CXX_COMPILER_ID:GNU>:-Wno-old-style-cast -ftemplate-depth=2048 ${CC_ASN1_SANITIZER_OPTS}>
+        $<$<CXX_COMPILER_ID:Clang>:-Wno-old-style-cast -ftemplate-depth=2048 ${CC_ASN1_SANITIZER_OPTS}>
+    )    
 
-#    if (NOT "${CC_ASN1_SANITIZER_OPTS}" STREQUAL "")
-#        target_link_options(${testName} PRIVATE
-#            $<$<CXX_COMPILER_ID:GNU>:${CC_ASN1_SANITIZER_OPTS}>
-#            $<$<CXX_COMPILER_ID:Clang>:${CC_ASN1_SANITIZER_OPTS}>
-#        ) 
-#    endif ()    
+    if (NOT "${CC_ASN1_SANITIZER_OPTS}" STREQUAL "")
+        target_link_options(${testName} PRIVATE
+            $<$<CXX_COMPILER_ID:GNU>:${CC_ASN1_SANITIZER_OPTS}>
+            $<$<CXX_COMPILER_ID:Clang>:${CC_ASN1_SANITIZER_OPTS}>
+        ) 
+    endif ()    
 
-#    if (CC_ASN1_TEST_BUILD_DOC AND DOXYGEN_FOUND)
-#        add_custom_target(doc_${name} ALL
-#            COMMAND COMMAND ${CMAKE_COMMAND} --build ${build_dir} --target doc_${name}
-#            DEPENDS ${build_tgt} 
-#        )
-#    endif ()
+    if (CC_ASN1_TEST_BUILD_DOC AND DOXYGEN_FOUND)
+        add_custom_target(doc_${name} ALL
+            COMMAND COMMAND ${CMAKE_COMMAND} --build ${build_dir} --target doc_${name}
+            DEPENDS ${build_tgt} 
+        )
+    endif ()
         
 endfunction ()
 

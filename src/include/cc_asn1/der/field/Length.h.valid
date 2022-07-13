@@ -9,5 +9,7 @@ bool valid() const
         return true;
     }
 
-    return (field_short().field_lenValue().value() == field_long().field().length());
+    return 
+        (field_short().field_lenValue().value() > 0U) &&
+        (field_short().field_lenValue().value() == field_long().field().length());
 }
