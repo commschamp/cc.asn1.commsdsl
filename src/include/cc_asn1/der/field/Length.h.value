@@ -23,3 +23,9 @@ void setValue(std::size_t val)
     field_short().field_flag().setBitValue_longForm(true);
     field_short().field_lenValue().setValue(field_long().length());
 }
+
+/// @brief Get maximal possible length value
+static constexpr std::size_t maxValue() 
+{
+    return std::numeric_limits<std::size_t>::max();
+}

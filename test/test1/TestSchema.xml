@@ -11,6 +11,14 @@
         <ref field="@cc_asn1.der.Length" name="Length" />
     </message>
 
+    <message name="Msg2" id="MsgId.M2">
+        <ref field="@cc_asn1.der.Boolean" name="Boolean" />
+        <ref field="@cc_asn1.der.Integer" name="Integer" />
+        <ref field="@cc_asn1.der.OctetString" name="OctetString" />
+        <ref field="@cc_asn1.der.Null" name="Null" />
+        <ref field="@cc_asn1.der.Utf8String" name="Utf8String" />
+    </message>
+
     <frame name="Frame">
         <id name="Id" field="MsgId" />
         <payload name="Payload" />

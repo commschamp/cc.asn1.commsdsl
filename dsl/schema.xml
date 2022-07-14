@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema name="cc_asn1" endian="big">
+    <fields>
+        <enum name="Tag" type="uint8" forceGen="true" hexAssign="true">
+            <validValue name="Boolean" val="0x1" />
+            <validValue name="Integer" val="0x2" />
+            <validValue name="BitString" val="0x3" />
+            <validValue name="OctetString" val="0x4" />
+            <validValue name="Null" val="0x5" />
+            <validValue name="ObjectIdentifier" val="0x6" />
+            <validValue name="Utf8String" val="0xC" />
+            <validValue name="PrintableString" val="0x13" />
+            <validValue name="Ia5String" val="0x16" />
+            <validValue name="UtcTime" val="0x17" />
+            <validValue name="GeneralizedTime" val="0x18" />
+            <validValue name="Sequence" val="0x30" />
+            <validValue name="Set" val="0x31" />
+        </enum>
+
+    </fields>
+
     <ns name="der">
         <fields>
             <bundle name="Length" semanticType="length">
@@ -21,6 +40,46 @@
                     </optional>
                 </members>
             </bundle>
+
+            <int name="TagByte" type="uint8" failOnInvalid="true" />
+
+            <bundle name="Boolean">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Boolean" />
+                <ref field="der.Length" />
+                <int name="Value" type="uint8">
+                    <special name="False" val="0x0" />
+                    <special name="True" val="0xff" />
+                </int>
+            </bundle>
+
+            <bundle name="Integer">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Integer" />
+                <ref field="der.Length" />
+                <int name="Value" type="int64" availableLengthLimit="true" />
+            </bundle>
+
+            <bundle name="RawInteger">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Integer" />
+                <ref field="der.Length" />
+                <data name="Value" />
+            </bundle>  
+
+            <bundle name="OctetString">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.OctetString" />
+                <ref field="der.Length" />
+                <data name="Value" />
+            </bundle>                      
+
+            <bundle name="Null">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Null" />
+                <ref field="der.Length" />
+            </bundle>
+
+            <bundle name="Utf8String">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Utf8String" />
+                <ref field="der.Length" />
+                <string name="Value" />
+            </bundle>                
         </fields>
     </ns>
 </schema>
