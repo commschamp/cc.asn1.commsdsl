@@ -1,0 +1,30 @@
+/// @brief Contents validity check
+bool valid() const
+{
+    auto& str = Base::value();
+    return 
+        std::all_of(
+            str.begin(), str.end(),
+            [](char ch)
+            {
+                bool resultTmp =
+                    (('A' <= ch) && (ch <= 'Z')) ||
+                    (('a' <= ch) && (ch <= 'z')) ||
+                    (('0' <= ch) && (ch <= '9')) ||
+                    (('+' <= ch) && (ch <= '/')); // +,-./ 
+
+                if (resultTmp) {
+                    return true;
+                }
+
+                static const char Chars[] = " \'():=?";
+
+                return 
+                    std::any_of(
+                        std::begin(Chars), std::end(Chars),
+                        [ch](char chTmp)
+                        {
+                            return ch == chTmp;
+                        });
+            });
+}

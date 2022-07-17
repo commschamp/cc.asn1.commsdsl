@@ -17,6 +17,8 @@
             <validValue name="Set" val="0x31" />
         </enum>
 
+        <string name="PrintableStringVal" validOverride="replace" />
+
     </fields>
 
     <ns name="der">
@@ -79,7 +81,31 @@
                 <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Utf8String" />
                 <ref field="der.Length" />
                 <string name="Value" />
-            </bundle>                
+            </bundle>       
+
+            <bundle name="PrintableString">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.PrintableString" />
+                <ref field="der.Length" />
+                <ref field="PrintableStringVal" name="Value" />
+            </bundle>   
+
+            <bundle name="Ia5String">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Ia5String" />
+                <ref field="der.Length" />
+                <string name="Value" />
+            </bundle>       
+
+            <bundle name="UtcTime">
+                <int name="Tag" reuse="der.UtcTime" defaultValidValue="Tag.UtcTime" />
+                <ref field="der.Length" />
+                <string name="Value" />
+            </bundle>
+
+            <bundle name="GeneralizedTime">
+                <int name="Tag" reuse="der.GeneralizedTime" defaultValidValue="Tag.GeneralizedTime" />
+                <ref field="der.Length" />
+                <string name="Value" />
+            </bundle>                                                   
         </fields>
     </ns>
 </schema>

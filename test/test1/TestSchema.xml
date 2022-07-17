@@ -17,6 +17,8 @@
         <ref field="@cc_asn1.der.OctetString" name="OctetString" />
         <ref field="@cc_asn1.der.Null" name="Null" />
         <ref field="@cc_asn1.der.Utf8String" name="Utf8String" />
+        <ref field="@cc_asn1.der.PrintableString" name="PrintableString" />
+        <ref field="@cc_asn1.der.Ia5String" name="Ia5String" />
     </message>
 
     <frame name="Frame">

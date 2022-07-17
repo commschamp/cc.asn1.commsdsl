@@ -147,9 +147,11 @@ void TestSuite::test2()
             0x2, // MsgId.M2
             0x1, 0x1, 0xff, // Boolean
             0x2, 0x2, 0x01, 0x02, // Integer
-            0x4, 0x4, 0x01, 0x02, 0x03, 0x04,
+            0x4, 0x4, 0x01, 0x02, 0x03, 0x04, // OctetString
             0x5, 0x0, // Null
             0xC, 0x5, 'h', 'e', 'l', 'l', 'o', // Utf8String
+            0x13, 0x5, 'h', 'e', 'l', 'l', 'o', // PrintableString
+            0x16, 0x5, 'h', 'e', 'l', 'l', 'o', // Ia5String
         };
         static const auto BufSize = std::extent<decltype(Buf)>::value;
 
@@ -162,5 +164,7 @@ void TestSuite::test2()
         TS_ASSERT_EQUALS(msg->field_integer().field_value().value(), 0x0102);
         TS_ASSERT_EQUALS(msg->field_octetString().field_value().value(), std::vector<std::uint8_t>({0x01, 0x02, 0x03, 0x04}));
         TS_ASSERT_EQUALS(msg->field_utf8String().field_value().value(), std::string("hello"));
+        TS_ASSERT_EQUALS(msg->field_printableString().field_value().value(), std::string("hello"));
+        TS_ASSERT_EQUALS(msg->field_ia5String().field_value().value(), std::string("hello"));
     } while (false);
 }
