@@ -4,6 +4,8 @@
         <enum name="MsgId" type="uint8">
             <validValue name="M1" val="1" />
             <validValue name="M2" val="2" />
+            <validValue name="M3" val="3" />
+            <validValue name="M4" val="4" />
         </enum>
     </fields>
 
@@ -20,6 +22,32 @@
         <ref field="@cc_asn1.der.PrintableString" name="PrintableString" />
         <ref field="@cc_asn1.der.Ia5String" name="Ia5String" />
     </message>
+
+    <message name="Msg3" id="MsgId.M3">
+        <bundle name="Sequence" reuse="@cc_asn1.der.Sequence">
+            <replace>
+                <bundle name="Value">
+                    <ref field="@cc_asn1.der.Integer" name="Integer" />
+                    <ref field="@cc_asn1.der.Boolean" name="Boolean"/>
+                    <ref field="@cc_asn1.der.Null" name="Null" />
+                </bundle>
+            </replace>
+        </bundle>
+    </message>    
+
+    <message name="Msg4" id="MsgId.M4">
+        <bundle name="Sequence" reuse="@cc_asn1.der.SequenceOf">
+            <replace>
+                <list name="Value">
+                    <bundle name="Element">
+                        <ref field="@cc_asn1.der.Integer" name="Integer" />
+                        <ref field="@cc_asn1.der.Boolean" name="Boolean"/>
+                        <ref field="@cc_asn1.der.Null" name="Null" />
+                    </bundle>
+                </list>
+            </replace>
+        </bundle>
+    </message>        
 
     <frame name="Frame">
         <id name="Id" field="MsgId" />

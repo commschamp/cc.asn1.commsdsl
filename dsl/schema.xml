@@ -96,16 +96,42 @@
             </bundle>       
 
             <bundle name="UtcTime">
-                <int name="Tag" reuse="der.UtcTime" defaultValidValue="Tag.UtcTime" />
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.UtcTime" />
                 <ref field="der.Length" />
                 <string name="Value" />
             </bundle>
 
             <bundle name="GeneralizedTime">
-                <int name="Tag" reuse="der.GeneralizedTime" defaultValidValue="Tag.GeneralizedTime" />
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.GeneralizedTime" />
                 <ref field="der.Length" />
                 <string name="Value" />
-            </bundle>                                                   
+            </bundle>   
+
+            <bundle name="Sequence">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Sequence" />
+                <ref field="der.Length" />
+                <bundle name="Value">
+                    <description>
+                        Replace this bundle with another relevant to the application
+                    </description>
+                    <members>
+                        <ref field="der.Null" name="Value" />
+                    </members>
+                </bundle>
+            </bundle>      
+
+            <bundle name="SequenceOf">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Sequence" />
+                <ref field="der.Length" />
+                <list name="Value">
+                    <description>
+                        Replace this list with another relevant to the application
+                    </description>
+                    <element>
+                        <ref field="der.Null" name="Value" />
+                    </element>
+                </list>
+            </bundle>                                                                       
         </fields>
     </ns>
 </schema>
