@@ -6,6 +6,8 @@
             <validValue name="M2" val="2" />
             <validValue name="M3" val="3" />
             <validValue name="M4" val="4" />
+            <validValue name="M5" val="5" />
+            <validValue name="M6" val="6" />
         </enum>
     </fields>
 
@@ -44,6 +46,30 @@
                         <ref field="@cc_asn1.der.Boolean" name="Boolean"/>
                         <ref field="@cc_asn1.der.Null" name="Null" />
                     </bundle>
+                </list>
+            </replace>
+        </bundle>
+    </message>        
+
+    <message name="Msg5" id="MsgId.M5">
+        <bundle name="Set" reuse="@cc_asn1.der.Set" copyOverrideCodeFrom="@cc_asn1.der.Set">
+            <replace>
+                <list name="Value">
+                    <variant name="Element">
+                        <ref field="@cc_asn1.der.Boolean" name="Boolean"/>
+                        <ref field="@cc_asn1.der.Integer" name="Integer" />
+                        <ref field="@cc_asn1.der.Null" name="Null" />
+                    </variant>
+                </list>
+            </replace>
+        </bundle>
+    </message>        
+
+    <message name="Msg6" id="MsgId.M6">
+        <bundle name="Set" reuse="@cc_asn1.der.Set" copyOverrideCodeFrom="@cc_asn1.der.Set">
+            <replace>
+                <list name="Value">
+                    <ref field="@cc_asn1.der.Ia5String" name="Element" />
                 </list>
             </replace>
         </bundle>

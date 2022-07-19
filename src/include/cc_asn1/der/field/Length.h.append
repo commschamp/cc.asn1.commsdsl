@@ -1,0 +1,11 @@
+/// @brief Order comparison of the @ref Length field
+/// @details The short form must come before the long form in the sorting order.
+template <typename TOpt, typename... TExtraOpts>
+bool operator<(const Length<TOpt, TExtraOpts...>& first, const Length<TOpt, TExtraOpts...>& second)
+{
+    if (first.field_short().field_flag() == second.field_short().field_flag()) {
+        return comms::field::toFieldBase(first) < comms::field::toFieldBase(second);
+    }
+
+    return (!first.field_short().field_flag().getBitValue_longForm());
+}

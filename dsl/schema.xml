@@ -112,7 +112,8 @@
                 <ref field="der.Length" />
                 <bundle name="Value">
                     <description>
-                        Replace this bundle with another relevant to the application
+                        Replace this bundle with another relevant to the application.
+                        Keep the members sorted by their tags.
                     </description>
                     <members>
                         <ref field="der.Null" name="Value" />
@@ -131,7 +132,25 @@
                         <ref field="der.Null" name="Value" />
                     </element>
                 </list>
-            </bundle>                                                                       
+            </bundle>
+
+            <bundle name="Set" refreshOverride="replace">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Set" />
+                <ref field="der.Length" />
+                <list name="Value">
+                    <description>
+                        Replace this list with another relevant to the application,
+                        use variant for SET or direct field in case of SETOF.
+                        Keep the variant members sorted by the tag.
+                    </description>
+                    <element>
+                        <variant name="Element">
+                            <ref field="der.Null" name="Value" />
+                        </variant>
+                    </element>
+                </list>
+            </bundle>      
+
         </fields>
     </ns>
 </schema>

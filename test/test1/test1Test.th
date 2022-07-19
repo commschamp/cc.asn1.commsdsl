@@ -12,6 +12,8 @@ public:
     void test2();
     void test3();
     void test4();
+    void test5();
+    void test6();
 
     using Interface =
         test1::Message<
@@ -30,9 +32,23 @@ public:
     using Msg2 = test1::message::Msg2<Interface, Options>;
     using Msg3 = test1::message::Msg3<Interface, Options>;
     using Msg4 = test1::message::Msg4<Interface, Options>;
+    using Msg5 = test1::message::Msg5<Interface, Options>;
+    using Msg6 = test1::message::Msg6<Interface, Options>;
 
     using Frame = test1::frame::Frame<Interface, test1::input::AllMessages<Interface, Options>, Options>;
     using MsgPtr = Frame::MsgPtr;
+
+    template <typename TMsg>
+    std::vector<std::uint8_t> writeMsg(const TMsg& msg, comms::ErrorStatus expEs = comms::ErrorStatus::Success)
+    {
+        std::vector<std::uint8_t> outBuf;
+        Frame frame;
+        outBuf.resize(frame.length(msg));
+        auto writeIter = comms::writeIteratorFor<Interface>(&outBuf[0]);
+        auto es = frame.write(msg, writeIter, outBuf.size());
+        TS_ASSERT_EQUALS(es, expEs);
+        return outBuf;
+    }    
 
     MsgPtr readWriteTest(const std::uint8_t* buf, std::size_t bufSize, comms::ErrorStatus expEs = comms::ErrorStatus::Success)
     {
@@ -47,12 +63,9 @@ public:
         }
 
         TS_ASSERT(msgPtr);
-        std::vector<std::uint8_t> outBuf;
-        outBuf.resize(frame.length(*msgPtr));
+        msgPtr->refresh();
+        auto outBuf = writeMsg(*msgPtr);
         TS_ASSERT_EQUALS(outBuf.size(), bufSize);
-        auto writeIter = comms::writeIteratorFor<Interface>(&outBuf[0]);
-        es = frame.write(*msgPtr, writeIter, outBuf.size());
-        TS_ASSERT_EQUALS(es, comms::ErrorStatus::Success);
         TS_ASSERT(std::equal(outBuf.begin(), outBuf.end(), buf));        
         return msgPtr;
     }
@@ -228,3 +241,71 @@ void TestSuite::test4()
     } while (false);
 }
 
+void TestSuite::test5()
+{
+    do {
+        static const std::uint8_t Buf[] = {
+            0x5, // MsgId.M5
+            0x31, // Set Tag
+            0x07, // Set Length
+            0x1, 0x1, 0x0ff, // Boolean
+            0x2, 0x2, 0x01, 0x02, // Integer
+        };
+        static const auto BufSize = std::extent<decltype(Buf)>::value;
+
+        auto msgPtr = readWriteTest(Buf, BufSize);
+        TS_ASSERT(msgPtr);
+
+        auto* msg = dynamic_cast<Msg5*>(msgPtr.get());
+        TS_ASSERT(msg != nullptr);
+        auto& varList = msg->field_set().field_value().value();
+        TS_ASSERT_EQUALS(varList.size(), 2U);
+        auto& boolMem = varList[0].accessField_boolean();
+        TS_ASSERT(boolMem.field_value().isTrue());        
+        auto& intMem = varList[1].accessField_integer();
+        TS_ASSERT_EQUALS(intMem.field_value().value(), 0x0102);
+    } while (false);
+
+    do {
+
+        Msg5 msg;
+        auto& varList = msg.field_set().field_value().value();
+        varList.resize(3);
+        varList[0].initField_null();
+        varList[1].initField_integer().field_value().setValue(0x0102);
+        varList[2].initField_boolean().field_value().setTrue();
+
+        msg.doRefresh();
+
+        static const std::uint8_t Buf[] = {
+            0x5, // MsgId.M5
+            0x31, // Set Tag
+            0x09, // Set Length
+            0x1, 0x1, 0x0ff, // Boolean
+            0x2, 0x2, 0x01, 0x02, // Integer
+            0x5, 0x0 // Null
+        };
+        static constexpr auto BufSize = std::extent<decltype(Buf)>::value;        
+
+        auto outBuf = writeMsg(static_cast<const Interface&>(msg));
+        TS_ASSERT_EQUALS(outBuf.size(), BufSize);
+        TS_ASSERT(std::equal(outBuf.begin(), outBuf.end(), std::begin(Buf)));
+
+    } while (false);
+}
+
+void TestSuite::test6()
+{
+    do {
+        Msg6 msg;
+        auto& stringsList = msg.field_set().field_value().value();
+        stringsList.resize(2U);
+        stringsList[0].field_value().value().assign(128U, 'a');
+        stringsList[1].field_value().value() = "hello";
+
+        msg.doRefresh();
+
+        // The long string should be after the short one due to the long form of length
+        TS_ASSERT_EQUALS(stringsList[0].field_value().value(), std::string("hello"));
+    } while (false);
+}

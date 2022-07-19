@@ -1,0 +1,7 @@
+/// @brief Updated refresh functionality
+bool refresh()
+{
+    Base::refresh();
+    std::sort(field_value().value().begin(), field_value().value().end());
+    return true;
+}
