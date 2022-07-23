@@ -1,0 +1,9 @@
+/// @brief Field validity check
+bool valid() const
+{
+    if (!Base::valid()) {
+        return false;
+    }
+
+    return field_length().getValue() <= sizeof(typename Field_value::ValueType);
+}

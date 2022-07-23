@@ -72,5 +72,10 @@ endif ()
 
 ################################################
 
+include (GNUInstallDirs)
+install(
+    DIRECTORY dsl src DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}
+)
+
 add_subdirectory (test)
 

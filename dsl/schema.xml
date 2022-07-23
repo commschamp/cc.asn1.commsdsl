@@ -17,6 +17,8 @@
             <validValue name="Set" val="0x31" />
         </enum>
 
+        <int name="TagByte" type="uint8" failOnInvalid="true" />
+
         <string name="PrintableStringVal" validOverride="replace" />
     </fields>
 
@@ -42,10 +44,8 @@
                 </members>
             </bundle>
 
-            <int name="TagByte" type="uint8" failOnInvalid="true" />
-
             <bundle name="Boolean">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Boolean" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Boolean" />
                 <ref field="der.Length" />
                 <int name="Value" type="uint8">
                     <special name="False" val="0x0" />
@@ -53,20 +53,22 @@
                 </int>
             </bundle>
 
-            <bundle name="Integer">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Integer" />
+            <bundle name="Integer" validOverride="extend">
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Integer" />
                 <ref field="der.Length" />
                 <int name="Value" type="int64" availableLengthLimit="true" />
             </bundle>
 
+            <bundle name="IntegerStrict" reuse="der.Integer" copyCodeFrom="der.Integer" failOnInvalid="true" />
+
             <bundle name="RawInteger">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Integer" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Integer" />
                 <ref field="der.Length" />
                 <data name="Value" />
             </bundle>  
 
-            <bundle name="BitString" readOverride="replace" writeOverride="replace" refreshOverride="extend">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.BitString" />
+            <bundle name="BitString" readOverride="replace" writeOverride="replace" refreshOverride="extend" validOverride="extend">
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.BitString" />
                 <ref field="der.Length" />
                 <int name="Shift" type="uint8" validRange="[0, 7]" />
                 <set name="Value" length="8" availableLengthLimit="true">
@@ -75,58 +77,60 @@
                     </description>
                     <bit name="Dummy" idx="0" />
                 </set>
-            </bundle>                
+            </bundle>      
+
+            <bundle name="BitStringStrict" reuse="der.BitString" copyCodeFrom="der.BitString" failOnInvalid="true" />          
 
             <bundle name="RawBitString" readOverride="replace" writeOverride="replace" refreshOverride="extend">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.BitString" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.BitString" />
                 <ref field="der.Length" />
                 <int name="Shift" type="uint8" validRange="[0, 7]" />
                 <data name="Value" />
             </bundle>            
 
             <bundle name="OctetString">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.OctetString" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.OctetString" />
                 <ref field="der.Length" />
                 <data name="Value" />
             </bundle>                      
 
             <bundle name="Null">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Null" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Null" />
                 <ref field="der.Length" />
             </bundle>
 
             <bundle name="Utf8String">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Utf8String" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Utf8String" />
                 <ref field="der.Length" />
                 <string name="Value" />
             </bundle>       
 
             <bundle name="PrintableString">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.PrintableString" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.PrintableString" />
                 <ref field="der.Length" />
                 <ref field="PrintableStringVal" name="Value" />
             </bundle>   
 
             <bundle name="Ia5String">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Ia5String" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Ia5String" />
                 <ref field="der.Length" />
                 <string name="Value" />
             </bundle>       
 
             <bundle name="UtcTime">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.UtcTime" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.UtcTime" />
                 <ref field="der.Length" />
                 <string name="Value" />
             </bundle>
 
             <bundle name="GeneralizedTime">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.GeneralizedTime" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.GeneralizedTime" />
                 <ref field="der.Length" />
                 <string name="Value" />
             </bundle>   
 
             <bundle name="Sequence">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Sequence" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Sequence" />
                 <ref field="der.Length" />
                 <bundle name="Value">
                     <description>
@@ -140,7 +144,7 @@
             </bundle>      
 
             <bundle name="SequenceOf">
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Sequence" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Sequence" />
                 <ref field="der.Length" />
                 <list name="Value">
                     <description>
@@ -155,7 +159,7 @@
             <bundle name="Set" refreshOverride="replace">
                 <!-- Wnen reusing this field also use "copyOverrideCodeFrom" to make sure 
                     the refresh functionality is copied -->
-                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Set" />
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Set" />
                 <ref field="der.Length" />
                 <list name="Value">
                     <description>
@@ -169,7 +173,13 @@
                         </variant>
                     </element>
                 </list>
-            </bundle>      
+            </bundle>   
+
+            <bundle name="Unknown">
+                <int name="Tag" reuse="TagByte" failOnInvalid="false" />
+                <ref field="der.Length" />
+                <data name="Value" />
+            </bundle>
 
         </fields>
     </ns>
