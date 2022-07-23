@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema name="test1">
+<schema name="test1" endian="big">
     <fields>
         <enum name="MsgId" type="uint8">
             <validValue name="M1" val="1" />
@@ -8,6 +8,7 @@
             <validValue name="M4" val="4" />
             <validValue name="M5" val="5" />
             <validValue name="M6" val="6" />
+            <validValue name="M7" val="7" />
         </enum>
     </fields>
 
@@ -52,7 +53,7 @@
     </message>        
 
     <message name="Msg5" id="MsgId.M5">
-        <bundle name="Set" reuse="@cc_asn1.der.Set" copyOverrideCodeFrom="@cc_asn1.der.Set">
+        <bundle name="Set" reuse="@cc_asn1.der.Set" copyCodeFrom="@cc_asn1.der.Set">
             <replace>
                 <list name="Value">
                     <variant name="Element">
@@ -66,14 +67,25 @@
     </message>        
 
     <message name="Msg6" id="MsgId.M6">
-        <bundle name="Set" reuse="@cc_asn1.der.Set" copyOverrideCodeFrom="@cc_asn1.der.Set">
+        <bundle name="Set" reuse="@cc_asn1.der.Set" copyCodeFrom="@cc_asn1.der.Set">
             <replace>
                 <list name="Value">
                     <ref field="@cc_asn1.der.Ia5String" name="Element" />
                 </list>
             </replace>
         </bundle>
-    </message>        
+    </message>     
+
+    <message name="Msg7" id="MsgId.M7">
+        <bundle name="BitString" reuse="@cc_asn1.der.BitString" copyCodeFrom="@cc_asn1.der.BitString">
+            <replace>
+                <set name="Value" length="8" availableLengthLimit="true">
+                    <bit name="B0" idx="0" />
+                    <bit name="B8" idx="8" />
+                </set>
+            </replace>
+        </bundle>
+    </message>           
 
     <frame name="Frame">
         <id name="Id" field="MsgId" />

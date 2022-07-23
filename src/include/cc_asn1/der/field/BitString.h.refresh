@@ -1,0 +1,33 @@
+/// @brief Updated refresh functionality
+bool refresh()
+{
+    bool updated = Base::refresh();
+    auto shift = field_shift().getValue();
+    if (shift == 0U) {
+        return updated;
+    }
+
+    static const decltype(shift) MaxShift = 7U;
+
+    shift = std::min(shift, MaxShift);
+
+    auto val = field_value().getValue();
+    auto mask = 1U << ((field_value().length() * 8U) - 1U);
+    decltype(shift) count = 0U;
+    while (count < MaxShift) {
+        if ((val & mask) != 0U) {
+            break;
+        }
+
+        val <<= 1U;
+        ++count;
+    }
+
+    shift = std::min(shift, count);
+    if (shift == field_shift().getValue()) {
+        return updated;
+    }
+
+    field_shift().setValue(shift);
+    return true;
+}

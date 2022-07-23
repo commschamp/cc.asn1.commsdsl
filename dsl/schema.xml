@@ -18,7 +18,6 @@
         </enum>
 
         <string name="PrintableStringVal" validOverride="replace" />
-
     </fields>
 
     <ns name="der">
@@ -65,6 +64,24 @@
                 <ref field="der.Length" />
                 <data name="Value" />
             </bundle>  
+
+            <bundle name="BitString" readOverride="replace" writeOverride="replace" refreshOverride="extend">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.BitString" />
+                <ref field="der.Length" />
+                <int name="Shift" type="uint8" validRange="[0, 7]" />
+                <set name="Value" length="8" availableLengthLimit="true">
+                    <description>
+                        Replace the set field with one properly listing the bits
+                    </description>
+                    <bit name="Dummy" idx="0" />
+                </set>
+            </bundle>                
+
+            <bundle name="RawBitString">
+                <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.BitString" />
+                <ref field="der.Length" />
+                <data name="Value" />
+            </bundle>            
 
             <bundle name="OctetString">
                 <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.OctetString" />
@@ -135,6 +152,8 @@
             </bundle>
 
             <bundle name="Set" refreshOverride="replace">
+                <!-- Wnen reusing this field also use "copyOverrideCodeFrom" to make sure 
+                    the refresh functionality is copied -->
                 <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.Set" />
                 <ref field="der.Length" />
                 <list name="Value">

@@ -14,6 +14,7 @@ public:
     void test4();
     void test5();
     void test6();
+    void test7();
 
     using Interface =
         test1::Message<
@@ -34,6 +35,7 @@ public:
     using Msg4 = test1::message::Msg4<Interface, Options>;
     using Msg5 = test1::message::Msg5<Interface, Options>;
     using Msg6 = test1::message::Msg6<Interface, Options>;
+    using Msg7 = test1::message::Msg7<Interface, Options>;
 
     using Frame = test1::frame::Frame<Interface, test1::input::AllMessages<Interface, Options>, Options>;
     using MsgPtr = Frame::MsgPtr;
@@ -307,5 +309,50 @@ void TestSuite::test6()
 
         // The long string should be after the short one due to the long form of length
         TS_ASSERT_EQUALS(stringsList[0].field_value().value(), std::string("hello"));
+    } while (false);
+}
+
+void TestSuite::test7()
+{
+    do {
+        static const std::uint8_t Buf[] = {
+            0x7, // MsgId.M7
+            0x03, // BitString Tag
+            0x03, // Length
+            0x04, // Shift
+            0xff, 0xf0, // bits
+        };
+        static const auto BufSize = std::extent<decltype(Buf)>::value;
+
+        auto msgPtr = readWriteTest(Buf, BufSize);
+        TS_ASSERT(msgPtr);
+
+        auto* msg = dynamic_cast<Msg7*>(msgPtr.get());
+        TS_ASSERT(msg != nullptr);
+        TS_ASSERT_EQUALS(msg->field_bitString().field_value().value(), 0xfff);
+    } while (false);
+
+    do {
+        Msg7 msg;
+        msg.field_bitString().field_value().value() = 0xfff;
+        msg.field_bitString().field_shift().setValue(7U);
+        msg.doRefresh();
+        TS_ASSERT_EQUALS(msg.field_bitString().field_shift().getValue(), 0x4);
+        static const std::uint8_t Buf[] = {
+            0x7, // MsgId.M7
+            0x03, // BitString Tag
+            0x03, // Length
+            0x04, // Shift
+            0xff, 0xf0, // bits
+        };
+        static const auto BufSize = std::extent<decltype(Buf)>::value;
+        TS_ASSERT_EQUALS(msg.field_bitString().field_value().length(), 2U);
+        TS_ASSERT_EQUALS(msg.field_bitString().field_shift().length(), 1U);
+        TS_ASSERT_EQUALS(msg.field_bitString().length(), 5U);
+        TS_ASSERT_EQUALS(msg.field_bitString().lengthFrom<Msg7::Field_bitString::FieldIdx_shift>(), 3U);
+
+        auto outBuf = writeMsg(msg);
+        TS_ASSERT_EQUALS(outBuf.size(), BufSize);
+        TS_ASSERT(std::equal(outBuf.begin(), outBuf.end(), std::begin(Buf)));
     } while (false);
 }
