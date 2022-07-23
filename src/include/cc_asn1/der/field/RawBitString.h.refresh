@@ -8,20 +8,24 @@ bool refresh()
         return updated;
     }
 
+    if (field_value().value().empty()) {
+        field_shift().setValue(0U);
+        return true;
+    }
+
     static const decltype(shift) MaxShift = 7U;
 
     shift = std::min(shift, MaxShift);
 
-    auto val = field_value().getValue();
+    auto val = field_value().value()[0];
     if (val == 0U) {
         field_shift().setValue(0U);
         return true;
     }
 
-    auto mask = 1U << ((field_value().length() * 8U) - 1U);
     decltype(shift) count = 0U;
     while (count < MaxShift) {
-        if ((val & mask) != 0U) {
+        if ((val & 0x80U) != 0U) {
             break;
         }
 

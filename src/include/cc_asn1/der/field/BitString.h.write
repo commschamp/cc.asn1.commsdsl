@@ -1,4 +1,5 @@
 /// @brief Updated write functionality
+/// @details Performs shift of written bits of the "value" field based on the value in the "shift" field.
 template <typename TIter>
 comms::ErrorStatus write(TIter& iter, std::size_t len) const
 {

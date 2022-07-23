@@ -1,0 +1,29 @@
+/// @brief Updated read functionality
+template <typename TIter>
+comms::ErrorStatus read(TIter& iter, std::size_t len)
+{
+    auto es = Base::read(iter, len);
+    if (es != comms::ErrorStatus::Success) {
+        return es;
+    }
+
+    auto& bytesList = field_value().value();
+    auto shift = field_shift().getValue();
+    if ((shift == 0U) || (bytesList.empty())) {
+        return es;
+    }
+
+    if (7U < shift) {
+        return comms::ErrorStatus::InvalidMsgData;
+    }
+
+    auto mask = static_cast<std::uint8_t>((1U << shift) - 1U);
+    std::uint8_t nextOr = 0U;
+    for (auto& byte : bytesList) {
+        auto updatedByte = static_cast<std::uint8_t>((byte >> shift) | nextOr);
+        nextOr = static_cast<decltype(nextOr)>((byte & mask) << shift);
+        byte = updatedByte;
+    }
+    
+    return es;
+}

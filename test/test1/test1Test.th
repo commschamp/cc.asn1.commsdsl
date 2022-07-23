@@ -15,6 +15,7 @@ public:
     void test5();
     void test6();
     void test7();
+    void test8();
 
     using Interface =
         test1::Message<
@@ -36,6 +37,7 @@ public:
     using Msg5 = test1::message::Msg5<Interface, Options>;
     using Msg6 = test1::message::Msg6<Interface, Options>;
     using Msg7 = test1::message::Msg7<Interface, Options>;
+    using Msg8 = test1::message::Msg8<Interface, Options>;
 
     using Frame = test1::frame::Frame<Interface, test1::input::AllMessages<Interface, Options>, Options>;
     using MsgPtr = Frame::MsgPtr;
@@ -356,3 +358,45 @@ void TestSuite::test7()
         TS_ASSERT(std::equal(outBuf.begin(), outBuf.end(), std::begin(Buf)));
     } while (false);
 }
+
+void TestSuite::test8()
+{
+    do {
+        static const std::uint8_t Buf[] = {
+            0x8, // MsgId.M8
+            0x03, // BitString Tag
+            0x04, // Length
+            0x04, // Shift
+            0xff, 0xff, 0xf0, // bits
+        };
+        static const auto BufSize = std::extent<decltype(Buf)>::value;
+
+        auto msgPtr = readWriteTest(Buf, BufSize);
+        TS_ASSERT(msgPtr);
+
+        auto* msg = dynamic_cast<Msg8*>(msgPtr.get());
+        TS_ASSERT(msg != nullptr);
+        TS_ASSERT_EQUALS(msg->field_bitString().field_value().value(), std::vector<std::uint8_t>({0x0f, 0xff, 0xff}));
+    } while (false);
+
+    do {
+        Msg8 msg;
+        msg.field_bitString().field_value().value() = std::vector<std::uint8_t>({0x0f, 0xff, 0xff});
+        msg.field_bitString().field_shift().setValue(7U);
+        msg.doRefresh();
+        TS_ASSERT_EQUALS(msg.field_bitString().field_shift().getValue(), 0x4);
+        static const std::uint8_t Buf[] = {
+            0x8, // MsgId.M8
+            0x03, // BitString Tag
+            0x04, // Length
+            0x04, // Shift
+            0xff, 0xff, 0xf0, // bits
+        };
+        static const auto BufSize = std::extent<decltype(Buf)>::value;
+
+        auto outBuf = writeMsg(msg);
+        TS_ASSERT_EQUALS(outBuf.size(), BufSize);
+        TS_ASSERT(std::equal(outBuf.begin(), outBuf.end(), std::begin(Buf)));
+    } while (false);
+}
+

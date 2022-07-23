@@ -77,9 +77,10 @@
                 </set>
             </bundle>                
 
-            <bundle name="RawBitString">
+            <bundle name="RawBitString" readOverride="replace" writeOverride="replace" refreshOverride="extend">
                 <int name="Tag" reuse="der.TagByte" defaultValidValue="Tag.BitString" />
                 <ref field="der.Length" />
+                <int name="Shift" type="uint8" validRange="[0, 7]" />
                 <data name="Value" />
             </bundle>            
 

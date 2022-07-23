@@ -1,0 +1,46 @@
+/// @brief Updated write functionality
+/// @details Performs shift of written bits of the "value" field based on the value in the "shift" field.
+template <typename TIter>
+comms::ErrorStatus write(TIter& iter, std::size_t len) const
+{
+    auto shift = field_shift().getValue();
+    if ((shift == 0U) || (field_value().value().empty())) {
+        return Base::write(iter, len);
+    }
+
+    auto es = Base::template writeUntil<FieldIdx_value>(iter, len);
+    if (es != comms::ErrorStatus::Success) {
+        return es;
+    }
+
+    auto remLen = len - Base::template lengthUntil<FieldIdx_value>();
+    if (remLen < field_value().length()) {
+        return comms::ErrorStatus::BufferOverflow;
+    }
+
+    auto writeByte = 
+        [&iter](std::uint8_t byte)
+        {
+            *iter = byte;
+            ++iter;
+        };
+
+    auto& valueBytes = field_value().value();
+    if (valueBytes.size() == 1U) {
+        auto byte = static_cast<std::uint8_t>(valueBytes.back() << shift);
+        writeByte(byte);
+        return comms::ErrorStatus::Success;
+    }
+
+    for (auto idx = 0U; idx < (field_value().value().size() - 1U); ++idx) {
+        std::uint8_t firstByte = valueBytes[idx];
+        std::uint8_t nextByte = valueBytes[idx + 1];
+
+        auto byte = static_cast<std::uint8_t>((firstByte << shift) | (nextByte >> (8U - shift)));
+        writeByte(byte);
+    }
+
+    auto lastByte = static_cast<std::uint8_t>(valueBytes.back() << shift);
+    writeByte(lastByte);
+    return comms::ErrorStatus::Success;    
+}
