@@ -156,6 +156,12 @@
                 </list>
             </bundle>
 
+            <bundle name="RawSequence">
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Sequence" />
+                <ref field="der.Length" />
+                <data name="Value" />
+            </bundle>              
+
             <bundle name="Set" refreshOverride="replace">
                 <!-- Wnen reusing this field also use "copyOverrideCodeFrom" to make sure 
                     the refresh functionality is copied -->
@@ -174,6 +180,12 @@
                     </element>
                 </list>
             </bundle>   
+
+            <bundle name="RawSet">
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Set" />
+                <ref field="der.Length" />
+                <data name="Value" />
+            </bundle>              
 
             <bundle name="Unknown">
                 <int name="Tag" reuse="TagByte" failOnInvalid="false" />

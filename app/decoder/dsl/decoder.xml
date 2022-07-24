@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema name="cc_asn1_decode" endian="big">
+    <fields>
+        <string name="MsgName" defaultValue="Message" />
+            
+        <enum name="MsgId" type="uint8" semanticType="messageId">
+            <validValue name="M0" val="0" displayName="^MsgName" />
+        </enum>  
+
+        <variant name="BasicElement" displayName="Element">
+            <ref field="@cc_asn1.der.Boolean" />
+            <ref field="@cc_asn1.der.IntegerStrict" failOnInvalid="true" />
+            <ref field="@cc_asn1.der.RawInteger" />
+            <ref field="@cc_asn1.der.BitStringStrict" failOnInvalid="true"/>
+            <ref field="@cc_asn1.der.RawBitString" />
+            <ref field="@cc_asn1.der.OctetString" />
+            <ref field="@cc_asn1.der.Null" />
+            <ref field="@cc_asn1.der.Utf8String" />
+            <ref field="@cc_asn1.der.PrintableString" />
+            <ref field="@cc_asn1.der.Ia5String" />
+            <ref field="@cc_asn1.der.UtcTime" />
+            <ref field="@cc_asn1.der.GeneralizedTime" />
+        </variant>   
+
+        <variant name="SeqElement1" reuse="BasicElement">
+            <ref field="@cc_asn1.der.RawSequence" />
+            <ref field="@cc_asn1.der.RawSet" />
+            <ref field="@cc_asn1.der.Unknown" />
+        </variant>
+
+        <variant name="SeqElement2" reuse="BasicElement">
+            <bundle reuse="@cc_asn1.der.SequenceOf">
+                <replace>
+                    <list name="Value" element="SeqElement1" />
+                </replace>
+            </bundle>
+            <bundle reuse="@cc_asn1.der.Set">
+                <replace>
+                    <list name="Value" element="SeqElement1" />
+                </replace>
+            </bundle>            
+            <ref field="@cc_asn1.der.Unknown" />
+        </variant>    
+
+        <variant name="SeqElement3" reuse="BasicElement">
+            <bundle reuse="@cc_asn1.der.SequenceOf">
+                <replace>
+                    <list name="Value" element="SeqElement2" />
+                </replace>
+            </bundle>
+            <bundle reuse="@cc_asn1.der.Set">
+                <replace>
+                    <list name="Value" element="SeqElement2" />
+                </replace>
+            </bundle>            
+            <ref field="@cc_asn1.der.Unknown" />
+        </variant>               
+
+        <variant name="Element" reuse="BasicElement">
+            <bundle reuse="@cc_asn1.der.SequenceOf">
+                <replace>
+                    <list name="Value" element="SeqElement3" />
+                </replace>
+            </bundle>
+            <bundle reuse="@cc_asn1.der.Set">
+                <replace>
+                    <list name="Value" element="SeqElement3" />
+                </replace>
+            </bundle>      
+            <ref field="@cc_asn1.der.Unknown" />      
+        </variant>  
+    </fields>
+
+    <frame name="Frame">
+        <id name="Id">
+            <int name="IdField" type="uint8" defaultValue="MsgId.M0" pseudo="true" />
+        </id>
+        <payload name="Data" />
+    </frame>
+    
+    <message name="Msg" id="MsgId.M0" displayName="^MsgName">
+        <list name="Elems" element="Element" />
+    </message>
+</schema>

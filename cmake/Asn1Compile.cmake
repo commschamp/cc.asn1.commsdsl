@@ -70,6 +70,24 @@ macro (cc_asn1_compile)
         if (CC_ASN1_COMPILE_WARN_AS_ERR)
             list (APPEND extra_flags_list "-Werror")
         endif ()
+
+        set (CC_ASN1_SANITIZER_OPTS)
+        if (CC_ASN1_USE_SANITIZERS AND
+            ((CMAKE_COMPILER_IS_GNUCC) OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")))
+            set (CC_ASN1_SANITIZER_OPTS 
+                -fno-omit-frame-pointer 
+                -fno-sanitize-recover=address 
+                -fsanitize=address
+                -fno-sanitize-recover=undefined
+                -fsanitize=undefined)
+        endif ()
+
+        if ((NOT "${CC_ASN1_SANITIZER_OPTS}" STREQUAL "") AND (${CMAKE_VERSION} VERSION_LESS "3.13"))
+            message (WARNING "The CMake version is too old, expected at least 3.13, sanitizers are disabled")
+            set (CC_ASN1_SANITIZER_OPTS)
+        endif ()        
+
+        list (APPEND extra_flags_list ${CC_ASN1_SANITIZER_OPTS})
         
         string(REPLACE ";" " " extra_flags "${extra_flags_list}")
         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${extra_flags}")
@@ -77,6 +95,8 @@ macro (cc_asn1_compile)
         if (CC_ASN1_COMPILE_STATIC_RUNTIME)
             SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
         endif ()
+
+
     elseif (MSVC)
         add_definitions("/wd4503" "-D_SCL_SECURE_NO_WARNINGS")
 

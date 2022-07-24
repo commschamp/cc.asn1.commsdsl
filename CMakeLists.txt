@@ -3,9 +3,10 @@ project ("cc_asn1")
 
 option (CC_ASN1_WARN_AS_ERR "Treat warning as error" ON)
 option (CC_ASN1_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
+option (CC_ASN1_BUILD_APPS "Build applications." OFF)
 option (CC_ASN1_BUILD_UNIT_TESTS "Build unittests." OFF)
 option (CC_ASN1_VALGRIND_TESTS "Enable testing with valgrind (applicable when CC_ASN1_BUILD_UNIT_TESTS is on)" OFF)
-option (CC_ASN1_TEST_USE_SANITIZERS "Build unittiests with sanitizers (applicable when CC_ASN1_BUILD_UNIT_TESTS is on)" ON)
+option (CC_ASN1_USE_SANITIZERS "Build unittiests/apps with sanitizers" OFF)
 option (CC_ASN1_TEST_BUILD_DOC "Build documentation target in generated projects (applicable when CC_ASN1_BUILD_UNIT_TESTS is on)" OFF)
 #option (CC_ASN1_EXTERNAL_COMMS "COMMS library is external, don't pull it it when needed" OFF)
 #option (CC_ASN1_EXTERNAL_COMMSDSL2COMMS "commsdsl2comms code generator is external, don't build it when needed" OFF)
@@ -77,5 +78,6 @@ install(
     DIRECTORY dsl src DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}
 )
 
+add_subdirectory (app)
 add_subdirectory (test)
 

@@ -29,7 +29,7 @@ function (test_func name)
 
     add_custom_command(
         OUTPUT ${output_dir}.tmp
-        DEPENDS ${schema_files} ${APP_NAME} ${rm_tmp_tgt}
+        DEPENDS ${schema_files} ${rm_tmp_tgt}
         COMMAND ${COMMSDSL2COMMS_EXE} -d -s --warn-as-err -o ${output_dir}.tmp ${code_input_param} ${schema_files}
     )
 
@@ -38,7 +38,7 @@ function (test_func name)
         COMMAND ${CMAKE_COMMAND}
             -DGENERATED="${output_dir}.tmp" -DOUTPUT="${output_dir}" -DCLEANUP_DIRS="doc;include" 
             -P "${PROJECT_SOURCE_DIR}/cmake/CopyGenerated.cmake"
-        DEPENDS ${output_dir}.tmp "${PROJECT_SOURCE_DIR}/cmake/CopyGenerated.cmake" ${schema_files} ${APP_NAME})
+        DEPENDS ${output_dir}.tmp "${PROJECT_SOURCE_DIR}/cmake/CopyGenerated.cmake" ${schema_files})
 
 
     set (build_tgt ${name}_build_tgt)
@@ -111,22 +111,6 @@ if (NOT TARGET cc::comms)
 endif ()
 
 find_program(COMMSDSL2COMMS_EXE "commsdsl2comms" PATH_SUFFIXES bin REQUIRED)
-
-set (CC_ASN1_SANITIZER_OPTS)
-if (CC_ASN1_TEST_USE_SANITIZERS AND
-    ((CMAKE_COMPILER_IS_GNUCC) OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")))
-    set (CC_ASN1_SANITIZER_OPTS 
-        -fno-omit-frame-pointer 
-        -fno-sanitize-recover=address 
-        -fsanitize=address
-        -fno-sanitize-recover=undefined
-        -fsanitize=undefined)
-endif ()
-
-if ((NOT "${CC_ASN1_SANITIZER_OPTS}" STREQUAL "") AND (${CMAKE_VERSION} VERSION_LESS "3.13"))
-    message (WARNING "The CMake version is too old, expected at least 3.13, sanitizers are disabled")
-    set (CC_ASN1_SANITIZER_OPTS)
-endif ()
 
 if ((NOT "${CC_ASN1_SANITIZER_OPTS}" STREQUAL "") AND (NOT "${VALGRIND_EXECUTABLE}" STREQUAL ""))
     message (WARNING "Cannot run valgrind when tests compiled with sanitizers")
