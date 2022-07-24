@@ -98,7 +98,7 @@ private:
     void printFieldValue(const TField& field, BitmaskFieldTag) const
     {
         using FieldType = typename std::decay<decltype(field)>::type;
-        std::cout << std::hex << "0x" << static_cast<std::uintmax_t>(field.value());
+        std::cout << std::hex << "0x" << static_cast<std::uintmax_t>(field.value()) << std::dec;
         for (auto idx = 0U; idx < FieldType::BitIdx_numOfValues; ++idx) {
             auto bitIdx = static_cast<typename FieldType::BitIdx>(idx);
             auto* name = field.bitName(bitIdx);
@@ -220,7 +220,7 @@ private:
                 static_cast<unsigned>(v) << " ";
         }
 
-        std::cout << dec;
+        std::cout << std::dec;
     }
 
     template <typename TVec>
