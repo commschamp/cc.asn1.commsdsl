@@ -15,6 +15,60 @@
             <validValue name="GeneralizedTime" val="0x18" />
             <validValue name="Sequence" val="0x30" />
             <validValue name="Set" val="0x31" />
+
+            <!-- Application tags -->
+            <validValue name="App0" val="0x40" />
+            <validValue name="App1" val="0x41" />
+            <validValue name="App2" val="0x42" />
+            <validValue name="App3" val="0x43" />
+            <validValue name="App4" val="0x44" />
+            <validValue name="App5" val="0x45" />
+            <validValue name="App6" val="0x46" />
+            <validValue name="App7" val="0x47" />
+            <validValue name="App8" val="0x48" />
+            <validValue name="App9" val="0x49" />
+            <validValue name="App10" val="0x4A" />
+            <validValue name="App11" val="0x4B" />
+            <validValue name="App12" val="0x4C" />
+            <validValue name="App13" val="0x4D" />
+            <validValue name="App14" val="0x4E" />
+            <validValue name="App15" val="0x4F" />     
+
+            <!-- Context tags -->
+            <validValue name="Context0" val="0x80" />
+            <validValue name="Context1" val="0x81" />
+            <validValue name="Context2" val="0x82" />
+            <validValue name="Context3" val="0x83" />
+            <validValue name="Context4" val="0x84" />
+            <validValue name="Context5" val="0x85" />
+            <validValue name="Context6" val="0x86" />
+            <validValue name="Context7" val="0x87" />
+            <validValue name="Context8" val="0x88" />
+            <validValue name="Context9" val="0x89" />
+            <validValue name="Context10" val="0x8A" />
+            <validValue name="Context11" val="0x8B" />
+            <validValue name="Context12" val="0x8C" />
+            <validValue name="Context13" val="0x8D" />
+            <validValue name="Context14" val="0x8E" />
+            <validValue name="Context15" val="0x8F" />      
+
+            <!-- Explicit Context tags -->
+            <validValue name="ExplicitContext0" val="0xA0" />
+            <validValue name="ExplicitContext1" val="0xA1" />
+            <validValue name="ExplicitContext2" val="0xA2" />
+            <validValue name="ExplicitContext3" val="0xA3" />
+            <validValue name="ExplicitContext4" val="0xA4" />
+            <validValue name="ExplicitContext5" val="0xA5" />
+            <validValue name="ExplicitContext6" val="0xA6" />
+            <validValue name="ExplicitContext7" val="0xA7" />
+            <validValue name="ExplicitContext8" val="0xA8" />
+            <validValue name="ExplicitContext9" val="0xA9" />
+            <validValue name="ExplicitContext10" val="0xAA" />
+            <validValue name="ExplicitContext11" val="0xAB" />
+            <validValue name="ExplicitContext12" val="0xAC" />
+            <validValue name="ExplicitContext13" val="0xAD" />
+            <validValue name="ExplicitContext14" val="0xAE" />
+            <validValue name="ExplicitContext15" val="0xAF" />                                        
         </enum>
 
         <int name="TagByte" type="uint8" failOnInvalid="true" />
