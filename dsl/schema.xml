@@ -20,6 +20,10 @@
         <int name="TagByte" type="uint8" failOnInvalid="true" />
 
         <string name="PrintableStringVal" validOverride="replace" />
+
+        <list name="ObjectIdentifierVal" readOverride="replace" writeOverride="replace" lengthOverride="replace" validOverride="extend">
+            <int name="Element" type="uintvar" length="8" />
+        </list>        
     </fields>
 
     <ns name="der">
@@ -98,6 +102,12 @@
                 <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Null" />
                 <ref field="der.Length" />
             </bundle>
+
+            <bundle name="ObjectIdentifier">
+                <int name="Tag" reuse="TagByte" defaultValidValue="Tag.ObjectIdentifier" />
+                <ref field="der.Length" />
+                <ref field="ObjectIdentifierVal" name="Value" />
+            </bundle>            
 
             <bundle name="Utf8String">
                 <int name="Tag" reuse="TagByte" defaultValidValue="Tag.Utf8String" />

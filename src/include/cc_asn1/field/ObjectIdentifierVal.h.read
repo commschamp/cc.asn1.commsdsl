@@ -1,0 +1,59 @@
+/// @brief Custom read functionality
+template <typename TIter>
+comms::ErrorStatus read(TIter& iter, std::size_t len)
+{
+    using ElementType = typename Base::ElementType;
+    ElementType first;
+
+    auto begIter = iter;
+    auto remLen = len;
+
+    auto updateRemLen = 
+        [&remLen, len, begIter, &iter]()
+        {
+            remLen = len - static_cast<std::size_t>(std::distance(begIter, iter));
+        };
+
+    auto es = first.read(iter, remLen);
+    if (es != comms::ErrorStatus::Success) {
+        return es;
+    }
+
+    updateRemLen();
+    ElementType second;
+
+    do {
+        if (first.getValue() < 40U) {
+            second.setValue(first.getValue());
+            first.setValue(0U);
+            break;
+        }
+
+        if (first.getValue() < 80) {
+            second.setValue(first.getValue() - 40U);
+            first.setValue(1U);
+            break;
+        }
+
+        second.setValue(first.getValue() - 80U);
+        first.setValue(2U);
+    } while (false);
+
+    auto& valuesList = Base::value();
+    valuesList.clear();
+    valuesList.push_back(first);
+    valuesList.push_back(second);
+
+    while (0U < remLen) {
+        ElementType nextElem;
+        es = nextElem.read(iter, remLen);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        valuesList.push_back(nextElem);
+        updateRemLen();
+    }
+
+    return es;
+}

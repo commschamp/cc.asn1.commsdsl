@@ -1,0 +1,23 @@
+/// @brief Custom length calculation
+std::size_t length() const
+{
+    auto& valuesList = Base::value();
+    if (valuesList.size() < 2U) {
+        return 0U;
+    }
+
+    auto firstVal = valuesList[0].getValue();
+    auto secondVal = valuesList[1].getValue();
+
+    using ElementType = typename Base::ElementType;
+    ElementType combined;
+    combined.setValue((firstVal * 40) + secondVal);
+
+    std::size_t result = combined.length();
+    for (auto idx = 2U; idx < valuesList.size(); ++idx) {
+        auto& elem = valuesList[idx];
+        result += elem.length();
+    }
+
+    return result;
+}

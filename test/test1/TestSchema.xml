@@ -10,6 +10,7 @@
             <validValue name="M6" val="6" />
             <validValue name="M7" val="7" />
             <validValue name="M8" val="8" />
+            <validValue name="M9" val="9" />
         </enum>
     </fields>
 
@@ -90,7 +91,11 @@
 
     <message name="Msg8" id="MsgId.M8">
         <ref name="BitString" field="@cc_asn1.der.RawBitString" />
-    </message>           
+    </message>  
+
+    <message name="Msg9" id="MsgId.M9">
+        <ref name="ObjectIdentifier" field="@cc_asn1.der.ObjectIdentifier" />
+    </message>               
 
     <frame name="Frame">
         <id name="Id" field="MsgId" />

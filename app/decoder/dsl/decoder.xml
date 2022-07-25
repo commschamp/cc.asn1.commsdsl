@@ -15,6 +15,7 @@
             <ref field="@cc_asn1.der.RawBitString" />
             <ref field="@cc_asn1.der.OctetString" />
             <ref field="@cc_asn1.der.Null" />
+            <ref field="@cc_asn1.der.ObjectIdentifier" />
             <ref field="@cc_asn1.der.Utf8String" />
             <ref field="@cc_asn1.der.PrintableString" />
             <ref field="@cc_asn1.der.Ia5String" />

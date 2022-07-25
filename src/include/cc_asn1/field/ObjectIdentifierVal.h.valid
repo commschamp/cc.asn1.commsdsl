@@ -1,0 +1,20 @@
+/// @brief Contents validity check
+bool valid() const
+{
+    auto& valuesList = Base::value();
+    if (valuesList.size() < 2U) {
+        return false;
+    }
+
+    auto firstVal = valuesList[0].getValue();
+    if (2U < firstVal) {
+        return false;
+    }
+
+    if (firstVal < 2U) {
+        auto secondVal = valuesList[1].getValue();
+        return (secondVal < 40U);
+    }
+
+    return true;
+}

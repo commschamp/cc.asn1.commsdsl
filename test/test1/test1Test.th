@@ -16,6 +16,7 @@ public:
     void test6();
     void test7();
     void test8();
+    void test9();
 
     using Interface =
         test1::Message<
@@ -38,6 +39,7 @@ public:
     using Msg6 = test1::message::Msg6<Interface, Options>;
     using Msg7 = test1::message::Msg7<Interface, Options>;
     using Msg8 = test1::message::Msg8<Interface, Options>;
+    using Msg9 = test1::message::Msg9<Interface, Options>;
 
     using Frame = test1::frame::Frame<Interface, test1::input::AllMessages<Interface, Options>, Options>;
     using MsgPtr = Frame::MsgPtr;
@@ -400,3 +402,31 @@ void TestSuite::test8()
     } while (false);
 }
 
+void TestSuite::test9()
+{
+    do {
+        static const std::uint8_t Buf[] = {
+            0x9, // MsgId.M9
+            0x06, // ObjectIdentifier
+            0x04, // Length
+            0x32, // First + second id
+            0x81, 0x00, // Third
+            0x7f, // Fourth
+        };
+        static const auto BufSize = std::extent<decltype(Buf)>::value;
+
+        auto msgPtr = readWriteTest(Buf, BufSize);
+        TS_ASSERT(msgPtr);
+
+        auto* msg = dynamic_cast<Msg9*>(msgPtr.get());
+        TS_ASSERT(msg != nullptr);
+        auto& valuesList = msg->field_objectIdentifier().field_value().value();
+        TS_ASSERT_EQUALS(valuesList.size(), 4U);
+        TS_ASSERT_EQUALS(valuesList[0].getValue(), 1U);
+        TS_ASSERT_EQUALS(valuesList[1].getValue(), 10U);
+        TS_ASSERT_EQUALS(valuesList[2].getValue(), 128U);
+        TS_ASSERT_EQUALS(valuesList[3].getValue(), 127U);
+
+        TS_ASSERT_EQUALS(msg->length(), BufSize - 1U);
+    } while (false);
+}

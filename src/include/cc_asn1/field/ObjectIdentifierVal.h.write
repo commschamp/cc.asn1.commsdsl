@@ -1,0 +1,35 @@
+/// @brief Custom write functionality
+template <typename TIter>
+comms::ErrorStatus write(TIter& iter, std::size_t len) const
+{
+    if (!valid()) {
+        return comms::ErrorStatus::InvalidMsgData;
+    }
+
+    auto& valuesList = Base::value();
+    COMMS_ASSERT(2U <= valuesList.size());
+
+    auto firstVal = valuesList[0].getValue();
+    auto secondVal = valuesList[1].getValue();
+    
+    using ElementType = typename Base::ElementType;
+    ElementType combined;
+    combined.setValue((firstVal * 40U) + secondVal);
+    auto es = combined.write(iter, len);
+    if (es != comms::ErrorStatus::Success) {
+        return es;
+    }
+
+    len -= combined.length();
+    for (auto idx = 2U; idx < valuesList.size(); ++idx) {
+        auto& elem = valuesList[idx];
+        es = elem.write(iter, len);
+        if (es != comms::ErrorStatus::Success) {
+            return es;
+        }
+
+        len -= elem.length();
+    }
+
+    return comms::ErrorStatus::Success;
+}
