@@ -2,11 +2,11 @@
 
 function (test_func name)
     set (test_dir "${CMAKE_CURRENT_SOURCE_DIR}/${name}")
-    set (asn1_schema ${PROJECT_SOURCE_DIR}/dsl/schema.xml)
+    set (asn1_schema ${PROJECT_SOURCE_DIR}/cc_asn1/dsl/schema.xml)
     file (GLOB test_schema_files ${test_dir}/TestSchema*.xml)
     set (schema_files ${asn1_schema} ${test_schema_files})
     set (output_dir ${CMAKE_CURRENT_BINARY_DIR}/${name})
-    set (asn1_code_input_dir "${PROJECT_SOURCE_DIR}/dsl_src")
+    set (asn1_code_input_dir "${PROJECT_SOURCE_DIR}/cc_asn1/dsl_src")
     set (test_code_input_dir "${test_dir}/src")
     set (code_input_param)
     if (EXISTS "${test_code_input_dir}/")

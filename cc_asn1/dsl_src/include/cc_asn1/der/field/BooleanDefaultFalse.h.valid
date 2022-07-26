@@ -1,0 +1,13 @@
+/// @brief Custom validity check
+bool valid() const
+{
+    if (!Base::valid()) {
+        return false;
+    }
+
+    if (Base::isMissing()) {
+        return true;
+    }
+
+    return !Base::field().field_value().isFalse();
+}
