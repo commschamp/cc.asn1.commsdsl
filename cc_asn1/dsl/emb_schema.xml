@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+    <ns name="asn1">
+        <fields>
+            <enum reuse="@cc_asn1.Tag" forceGen="true" />
+            <int reuse="@cc_asn1.TagByte" />
+            <string reuse="@cc_asn1.PrintableStringVal" reuseCode="true" />
+            <list reuse="@cc_asn1.ObjectIdentifierVal" reuseCode="true" />
+        </fields>
+
+        <ns name="der">
+            <fields>
+                <bundle reuse="@cc_asn1.der.Length" reuseCode="true" />
+                <bundle reuse="@cc_asn1.der.Boolean">
+                    <replace>
+                        <ref field="asn1.der.Length" />    
+                    </replace>
+                </bundle>
+
+                <optional name="BooleanDefaultFalse" missingOnReadFail="true" missingOnInvalid="true" copyCodeFrom="@cc_asn1.der.BooleanDefaultFalse">
+                    <ref field="asn1.der.Boolean" />
+                </optional>            
+
+                <bundle reuse="@cc_asn1.der.Integer" reuseCode="true">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>
+                </bundle>
+
+                <bundle name="IntegerStrict" reuse="asn1.der.Integer" reuseCode="true" failOnInvalid="true" />
+
+                <bundle reuse="@cc_asn1.der.RawInteger" reuseCode="true">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>
+                </bundle>
+
+                <bundle reuse="@cc_asn1.der.BitString" reuseCode="true">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>
+                </bundle>                
+
+                <bundle name="BitStringStrict" reuse="asn1.der.BitString" reuseCode="true" failOnInvalid="true" />          
+
+                <bundle reuse="@cc_asn1.der.RawBitString" reuseCode="true">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>
+
+                <bundle reuse="@cc_asn1.der.OctetString">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>
+
+                <bundle reuse="@cc_asn1.der.Null">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>   
+
+                <bundle reuse="@cc_asn1.der.ObjectIdentifier">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                        <ref field="asn1.ObjectIdentifierVal" name="Value" />
+                    </replace>                
+                </bundle>   
+
+                <bundle reuse="@cc_asn1.der.Utf8String">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>       
+
+                <bundle reuse="@cc_asn1.der.PrintableString">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>      
+
+                <bundle reuse="@cc_asn1.der.Ia5String">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>                                                                            
+
+                <bundle reuse="@cc_asn1.der.UtcTime">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>    
+
+                <bundle reuse="@cc_asn1.der.GeneralizedTime">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>     
+
+                <bundle reuse="@cc_asn1.der.Sequence">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>    
+
+                <bundle reuse="@cc_asn1.der.SequenceOf">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>    
+
+                <bundle reuse="@cc_asn1.der.RawSequence">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>                                                                 
+
+                <bundle reuse="@cc_asn1.der.Set" reuseCode="true">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>    
+
+                <bundle reuse="@cc_asn1.der.RawSet">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>       
+
+                <bundle reuse="@cc_asn1.der.ExplicitContext0">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>     
+
+                <bundle name="ExplicitContext1" reuse="asn1.der.ExplicitContext0">
+                    <replace>
+                        <int name="Tag" reuse="asn1.TagByte" defaultValidValue="asn1.Tag.ExplicitContext1" />
+                    </replace>                
+                </bundle>                                                       
+
+                <bundle name="ExplicitContext2" reuse="asn1.der.ExplicitContext0">
+                    <replace>
+                        <int name="Tag" reuse="asn1.TagByte" defaultValidValue="asn1.Tag.ExplicitContext2" />
+                    </replace>                
+                </bundle>                  
+
+                <bundle name="ExplicitContext3" reuse="asn1.der.ExplicitContext0">
+                    <replace>
+                        <int name="Tag" reuse="asn1.TagByte" defaultValidValue="asn1.Tag.ExplicitContext3" />
+                    </replace>                
+                </bundle>
+
+                <bundle name="ExplicitContext4" reuse="asn1.der.ExplicitContext0">
+                    <replace>
+                        <int name="Tag" reuse="asn1.TagByte" defaultValidValue="asn1.Tag.ExplicitContext4" />
+                    </replace>                
+                </bundle>                  
+
+                <bundle reuse="@cc_asn1.der.Unknown">
+                    <replace>
+                        <ref field="asn1.der.Length" />
+                    </replace>                
+                </bundle>  
+            </fields>
+        </ns>
+    </ns>
+</schema>

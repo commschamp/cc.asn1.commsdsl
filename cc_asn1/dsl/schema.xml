@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema name="cc_asn1" endian="big">
     <fields>
-        <enum name="Tag" type="uint8" forceGen="true" hexAssign="true">
+        <enum name="Tag" type="uint8" hexAssign="true">
             <validValue name="Boolean" val="0x1" />
             <validValue name="Integer" val="0x2" />
             <validValue name="BitString" val="0x3" />
