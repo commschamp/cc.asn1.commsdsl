@@ -1,0 +1,65 @@
+image:
+    - Visual Studio 2022  
+    - Visual Studio 2019  
+    - Visual Studio 2017    
+
+
+init:
+    - git config --global core.autocrlf input
+
+clone_folder: c:\projects\cc.demo1.commsdsl
+shallow_clone: true             
+
+platform:
+    - x64
+    - x86
+
+configuration:
+    - Debug
+    - Release
+
+environment:
+    COMMS_BRANCH: develop
+    COMMSDSL_BRANCH: develop
+    matrix:
+        - CPP_STD: 11
+        - CPP_STD: 14
+        - CPP_STD: 17
+        - CPP_STD: 20
+
+matrix:
+    fast_finish: false
+    exclude:
+        - image: Visual Studio 2017
+          CPP_STD: 20                           
+        
+install:
+    - call script\appveyor_install.bat
+
+build_script:
+    - set BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\build.%PLATFORM%.%CONFIGURATION%.%TOOLCHAIN%
+    - set EXTERNALS_DIR=%APPVEYOR_BUILD_FOLDER%\externals
+    - if exist %BUILD_DIR% rmdir /S /Q %BUILD_DIR%
+    - if exist %EXTERNALS_DIR% rmdir /S /Q %EXTERNALS_DIR%
+    - mkdir %EXTERNALS_DIR%
+    - cd %EXTERNALS_DIR%
+    - git clone -b %COMMS_BRANCH% https://github.com/commschamp/comms
+    - git clone -b %COMMSDSL_BRANCH% https://github.com/commschamp/commsdsl
+    - echo ------------------------- Building COMMS library -------------------------
+    - set COMMS_BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\externals\comms\build.%PLATFORM%.%CONFIGURATION%.%TOOLCHAIN%
+    - cmake -E make_directory %COMMS_BUILD_DIR%
+    - cd %COMMS_BUILD_DIR%
+    - cmake %APPVEYOR_BUILD_FOLDER%/externals/comms -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_INSTALL_PREFIX=install
+    - cmake --build . --target install
+    - echo ------------------------- Building commsdsl -------------------------
+    - set COMMSDSL_BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\externals\commsdsl\build.%PLATFORM%.%CONFIGURATION%.%TOOLCHAIN%
+    - cmake -E make_directory %COMMSDSL_BUILD_DIR%
+    - cd %COMMSDSL_BUILD_DIR%
+    - cmake %APPVEYOR_BUILD_FOLDER%/externals/commsdsl -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_INSTALL_PREFIX=install -DCOMMSDSL_INSTALL_LIBRARY=OFF COMMSDSL_EXTERNAL_COMMS -DCMAKE_PREFIX_PATH="%COMMS_BUILD_DIR%\install"
+    - cmake --build . --target install
+    - echo ------------------------- Building Project -------------------------
+    - mkdir %BUILD_DIR%
+    - cd %BUILD_DIR%
+    - cmake .. -DCMAKE_BUILD_TYPE=%CONFIGURATION% -G "NMake Makefiles" -DCOMMS_INSTALL_DIR="%COMMS_BUILD_DIR%\install" -DCC_ASN1_BUILD_APPS=ON -DCC_ASN1_BUILD_UNIT_TESTS=ON -DCC_ASN1_TESTS_CXX_STANDARD=%CPP_STD% -DCMAKE_CXX_STANDARD=%CPP_STD% -DCMAKE_PREFIX_PATH="%COMMS_BUILD_DIR%\install;%COMMSDSL_BUILD_DIR%\install"
+    - cmake --build .
+
