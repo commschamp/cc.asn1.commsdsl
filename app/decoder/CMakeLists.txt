@@ -74,6 +74,10 @@ set (src
 add_executable(${name} ${src})
 target_link_libraries(${name} cc::comms)
 target_include_directories(${name} PRIVATE ${install_dir}/include)
+target_compile_options(${name} PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:-D_CRT_SECURE_NO_WARNINGS>
+)       
+
 add_dependencies(${name} ${name}_build_tgt)
 
 install (
