@@ -94,3 +94,282 @@ jobs:
       working-directory: ${{runner.workspace}}/build/
       shell: bash
       run: ctest
+
+
+  build_gcc_ubuntu_20_04:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release, MinSizeRel]
+        cc_ver: [8, 9, 10, 11]
+        cpp: [11, 14, 17, 20]
+        exclude:
+          - cc_ver: 8
+            cpp: 20
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Prepare Install
+      run: sudo apt-get update --fix-missing    
+      
+    - name: Install Packages
+      run: sudo apt install libxml2-dev gcc-${{matrix.cc_ver}} g++-${{matrix.cc_ver}} gcc-8 g++-8
+
+    - name: Create Externals directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals        
+
+    - name: Clone COMMS library
+      working-directory: ${{runner.workspace}}/externals 
+      run: git clone -b $COMMS_BRANCH https://github.com/commschamp/comms
+
+    - name: Create COMMS build directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals/comms/build  
+
+    - name: Configure COMMS library
+      shell: bash
+      working-directory: ${{runner.workspace}}/externals/comms/build 
+      run: cmake ${{runner.workspace}}/externals/comms -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install
+      env:
+        CC: gcc-${{matrix.cc_ver}}
+        CXX: g++-${{matrix.cc_ver}}
+
+    - name: Build COMMS library
+      working-directory: ${{runner.workspace}}/externals/comms/build
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1     
+
+    - name: Clone commsdsl
+      working-directory: ${{runner.workspace}}/externals 
+      run: git clone -b $COMMSDSL_BRANCH https://github.com/commschamp/commsdsl
+
+    - name: Create commsdsl build directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals/commsdsl/build  
+
+    - name: Configure commsdsl
+      shell: bash
+      working-directory: ${{runner.workspace}}/externals/commsdsl/build 
+      run: cmake ${{runner.workspace}}/externals/commsdsl -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCOMMSDSL_INSTALL_LIBRARY=OFF -DCMAKE_PREFIX_PATH="${{runner.workspace}}/externals/comms/build/install"
+      env:
+        CC: gcc-${{matrix.cc_ver}}
+        CXX: g++-${{matrix.cc_ver}}
+
+    - name: Build commsdsl
+      working-directory: ${{runner.workspace}}/externals/commsdsl/build
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1               
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=${{runner.workspace}}/externals/comms/build/install\;${{runner.workspace}}/externals/commsdsl/build/install -DCC_ASN1_BUILD_APPS=ON -DCC_ASN1_BUILD_UNIT_TESTS=ON -DCC_ASN1_TESTS_CXX_STANDARD=${{matrix.cpp}} -DCMAKE_CXX_STANDARD=${{matrix.cpp}}
+      env:
+        CC: gcc-${{matrix.cc_ver}}
+        CXX: g++-${{matrix.cc_ver}}
+
+    - name: Build 
+      working-directory: ${{runner.workspace}}/build/
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1 
+
+    - name: Test 
+      working-directory: ${{runner.workspace}}/build/
+      shell: bash
+      run: ctest
+          
+  build_clang_ubuntu_18_04:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release, MinSizeRel]
+        cc_ver: ["4.0", "5.0", "6.0"]
+        cpp: [11, 14, 17]
+        exclude:
+          - cc_ver: "4.0"
+            cpp: 17
+
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Prepare Install
+      run: sudo apt-get update --fix-missing    
+      
+    - name: Install Packages
+      run: sudo apt install libxml2-dev clang-${{matrix.cc_ver}} clang-6.0
+
+    - name: Create Externals directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals        
+
+    - name: Clone COMMS library
+      working-directory: ${{runner.workspace}}/externals 
+      run: git clone -b $COMMS_BRANCH https://github.com/commschamp/comms
+
+    - name: Create COMMS build directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals/comms/build  
+
+    - name: Configure COMMS library
+      shell: bash
+      working-directory: ${{runner.workspace}}/externals/comms/build 
+      run: cmake ${{runner.workspace}}/externals/comms -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install
+      env:
+        CC: clang-${{matrix.cc_ver}}
+        CXX: clang++-${{matrix.cc_ver}}
+
+    - name: Build COMMS library
+      working-directory: ${{runner.workspace}}/externals/comms/build
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1     
+
+    - name: Clone commsdsl
+      working-directory: ${{runner.workspace}}/externals 
+      run: git clone -b $COMMSDSL_BRANCH https://github.com/commschamp/commsdsl
+
+    - name: Create commsdsl build directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals/commsdsl/build  
+
+    - name: Configure commsdsl
+      shell: bash
+      working-directory: ${{runner.workspace}}/externals/commsdsl/build 
+      run: cmake ${{runner.workspace}}/externals/commsdsl -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCOMMSDSL_INSTALL_LIBRARY=OFF -DCMAKE_PREFIX_PATH="${{runner.workspace}}/externals/comms/build/install"
+      env:
+        CC: clang-6.0
+        CXX: clang++-6.0
+
+    - name: Build commsdsl
+      working-directory: ${{runner.workspace}}/externals/commsdsl/build
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1               
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=${{runner.workspace}}/externals/comms/build/install\;${{runner.workspace}}/externals/commsdsl/build/install -DCC_ASN1_BUILD_APPS=ON -DCC_ASN1_BUILD_UNIT_TESTS=ON -DCC_ASN1_TESTS_CXX_STANDARD=${{matrix.cpp}} -DCMAKE_CXX_STANDARD=${{matrix.cpp}}
+      env:
+        CC: clang-${{matrix.cc_ver}}
+        CXX: clang++-${{matrix.cc_ver}}
+
+    - name: Build 
+      working-directory: ${{runner.workspace}}/build/
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1 
+
+    - name: Test 
+      working-directory: ${{runner.workspace}}/build/
+      shell: bash
+      run: ctest
+                  
+
+  build_clang_ubuntu_20_04:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [Debug, Release, MinSizeRel]
+        cc_ver: [7, 8, 9, 10, 11, 12]
+        cpp: [11, 14, 17, 20]
+        exclude:
+          - cc_ver: 7
+            cpp: 20
+          - cc_ver: 8
+            cpp: 20
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Prepare Install
+      run: sudo apt-get update --fix-missing    
+      
+    - name: Install Packages
+      run: sudo apt install libxml2-dev clang-${{matrix.cc_ver}}
+    - name: Create Externals directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals        
+
+    - name: Clone COMMS library
+      working-directory: ${{runner.workspace}}/externals 
+      run: git clone -b $COMMS_BRANCH https://github.com/commschamp/comms
+
+    - name: Create COMMS build directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals/comms/build  
+
+    - name: Configure COMMS library
+      shell: bash
+      working-directory: ${{runner.workspace}}/externals/comms/build 
+      run: cmake ${{runner.workspace}}/externals/comms -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install
+      env:
+        CC: clang-${{matrix.cc_ver}}
+        CXX: clang++-${{matrix.cc_ver}}
+
+    - name: Build COMMS library
+      working-directory: ${{runner.workspace}}/externals/comms/build
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1     
+
+    - name: Clone commsdsl
+      working-directory: ${{runner.workspace}}/externals 
+      run: git clone -b $COMMSDSL_BRANCH https://github.com/commschamp/commsdsl
+
+    - name: Create commsdsl build directory
+      run: cmake -E make_directory ${{runner.workspace}}/externals/commsdsl/build  
+
+    - name: Configure commsdsl
+      shell: bash
+      working-directory: ${{runner.workspace}}/externals/commsdsl/build 
+      run: cmake ${{runner.workspace}}/externals/commsdsl -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCOMMSDSL_INSTALL_LIBRARY=OFF -DCMAKE_PREFIX_PATH="${{runner.workspace}}/externals/comms/build/install"
+      env:
+        CC: clang-${{matrix.cc_ver}}
+        CXX: clang++-${{matrix.cc_ver}}
+
+    - name: Build commsdsl
+      working-directory: ${{runner.workspace}}/externals/commsdsl/build
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1               
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.type}} -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=${{runner.workspace}}/externals/comms/build/install\;${{runner.workspace}}/externals/commsdsl/build/install -DCC_ASN1_BUILD_APPS=ON -DCC_ASN1_BUILD_UNIT_TESTS=ON -DCC_ASN1_TESTS_CXX_STANDARD=${{matrix.cpp}} -DCMAKE_CXX_STANDARD=${{matrix.cpp}}
+      env:
+        CC: clang-${{matrix.cc_ver}}
+        CXX: clang++-${{matrix.cc_ver}}
+
+    - name: Build 
+      working-directory: ${{runner.workspace}}/build/
+      shell: bash
+      run: cmake --build . --target install
+      env:
+        VERBOSE: 1 
+
+    - name: Test 
+      working-directory: ${{runner.workspace}}/build/
+      shell: bash
+      run: ctest
+                           
+          
