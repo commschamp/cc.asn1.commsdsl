@@ -27,7 +27,6 @@ endif ()
 ################################################
 
 set (CMAKE_SCIPTS_DIR "${PROJECT_SOURCE_DIR}/cmake")
-include (${CMAKE_SCIPTS_DIR}/Asn1Funcs.cmake)
 include (${CMAKE_SCIPTS_DIR}/Asn1Compile.cmake)
 
 # Compiler options
