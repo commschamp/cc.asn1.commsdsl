@@ -2,8 +2,8 @@
 template <typename TIter>
 comms::ErrorStatus read(TIter& iter, std::size_t len)
 {
-    using ElementType = typename Base::ElementType;
-    ElementType first;
+    using ListElemType = typename Base::ElementType;
+    ListElemType first;
 
     auto begIter = iter;
     auto remLen = len;
@@ -20,7 +20,7 @@ comms::ErrorStatus read(TIter& iter, std::size_t len)
     }
 
     updateRemLen();
-    ElementType second;
+    ListElemType second;
 
     do {
         if (first.getValue() < 40U) {
@@ -45,7 +45,7 @@ comms::ErrorStatus read(TIter& iter, std::size_t len)
     valuesList.push_back(second);
 
     while (0U < remLen) {
-        ElementType nextElem;
+        ListElemType nextElem;
         es = nextElem.read(iter, remLen);
         if (es != comms::ErrorStatus::Success) {
             return es;

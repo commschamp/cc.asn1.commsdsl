@@ -12,8 +12,8 @@ comms::ErrorStatus write(TIter& iter, std::size_t len) const
     auto firstVal = valuesList[0].getValue();
     auto secondVal = valuesList[1].getValue();
     
-    using ElementType = typename Base::ElementType;
-    ElementType combined;
+    using ListElemType = typename Base::ElementType;
+    ListElemType combined;
     combined.setValue((firstVal * 40U) + secondVal);
     auto es = combined.write(iter, len);
     if (es != comms::ErrorStatus::Success) {

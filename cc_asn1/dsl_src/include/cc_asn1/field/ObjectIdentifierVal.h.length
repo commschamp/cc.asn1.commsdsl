@@ -9,8 +9,8 @@ std::size_t length() const
     auto firstVal = valuesList[0].getValue();
     auto secondVal = valuesList[1].getValue();
 
-    using ElementType = typename Base::ElementType;
-    ElementType combined;
+    using ListElemType = typename Base::ElementType;
+    ListElemType combined;
     combined.setValue((firstVal * 40) + secondVal);
 
     std::size_t result = combined.length();
