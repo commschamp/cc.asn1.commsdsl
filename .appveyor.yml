@@ -7,7 +7,7 @@ image:
 init:
     - git config --global core.autocrlf input
 
-clone_folder: c:\projects\cc.demo1.commsdsl
+clone_folder: c:\projects\cc.asn1
 shallow_clone: true             
 
 platform:
@@ -55,7 +55,7 @@ build_script:
     - set COMMSDSL_BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\externals\commsdsl\build.%PLATFORM%.%CONFIGURATION%.%TOOLCHAIN%
     - cmake -E make_directory %COMMSDSL_BUILD_DIR%
     - cd %COMMSDSL_BUILD_DIR%
-    - cmake %APPVEYOR_BUILD_FOLDER%/externals/commsdsl -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_INSTALL_PREFIX=install -DCOMMSDSL_INSTALL_LIBRARY=OFF COMMSDSL_EXTERNAL_COMMS -DCMAKE_PREFIX_PATH="%COMMS_BUILD_DIR%\install"
+    - cmake %APPVEYOR_BUILD_FOLDER%/externals/commsdsl -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_INSTALL_PREFIX=install -DCOMMSDSL_INSTALL_LIBRARY=OFF -DCMAKE_PREFIX_PATH="%COMMS_BUILD_DIR%\install"
     - cmake --build . --target install
     - echo ------------------------- Building Project -------------------------
     - mkdir %BUILD_DIR%
