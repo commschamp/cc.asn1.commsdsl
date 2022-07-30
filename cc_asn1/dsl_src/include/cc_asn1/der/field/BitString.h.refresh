@@ -25,7 +25,7 @@ bool refresh()
             break;
         }
 
-        val <<= 1U;
+        val = static_cast<decltype(val)>(val << 1U);
         ++count;
     }
 
