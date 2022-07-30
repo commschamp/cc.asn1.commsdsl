@@ -14,6 +14,12 @@ option (CC_ASN1_TEST_BUILD_DOC "Build documentation target in generated projects
 # CC_ASN1_TESTS_CXX_STANDARD - C++ standard to use in unittests
 # CC_ASN1_EXTERNALS_DIR - Directory to contain sources for external projects, defaults to ${PROJECT_SOURCE_DIR}/externals.
 
+# Other built-in CMake variables that can be used
+# ---------------------------
+# CMAKE_CXX_STANDARD - C++ standard to be used for built applications
+# CMAKE_PREFIX_PATH - Path(s) to find externals like COMMS library
+# CMAKE_PROGRAM_PATH - Path(s) to find programs like commsdsl2comms to parse the schema files(s)
+
 ################################################
 
 if (NOT CC_ASN1_EXTERNALS_DIR)
