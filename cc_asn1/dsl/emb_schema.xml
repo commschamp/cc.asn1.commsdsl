@@ -17,7 +17,7 @@
                     </replace>
                 </bundle>
 
-                <optional name="BooleanDefaultFalse" missingOnReadFail="true" missingOnInvalid="true" copyCodeFrom="@cc_asn1.der.BooleanDefaultFalse">
+                <optional reuse="@cc_asn1.der.BooleanDefaultFalse" reuseCode="true">
                     <ref field="asn1.der.Boolean" />
                 </optional>            
 
