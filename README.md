@@ -1,12 +1,12 @@
 # Overview
-This project is a member of the [CommsChampion Ecosystem][CommsChampion Ecosystem](https://commschamp.github.io/).
-It provides necessary [CommsDSL](https://commschamp.github.io/commsdsl_spec] schemas as well as
+This project is a member of the [CommsChampion Ecosystem](https://commschamp.github.io/).
+It provides necessary [CommsDSL](https://commschamp.github.io/commsdsl_spec) schemas as well as
 extra injection code to be able to use [ASN.1](https://en.wikipedia.org/wiki/ASN.1) encodings (DER/BER/CER)
 in the definition of some binary communication protocols and/or data (de)serialization.
 
 At this stage the work on the available definitions is incomplete. It is performed on-request basis.
 If some definition is missing and required for your work, please open an issue, and better yet submit a
-pull request with the missing feature added.
+pull request with the missing feature implemented.
 
 # How to Build
 This project uses CMake as its build system. Please open main
@@ -31,7 +31,9 @@ Building with apps and tests
 ```
 $> cd /path/to/cc.asn1.commsdsl
 $> mkdir build && cd build
-$> cmake .. -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_PREFIX_PATH=/path/to/installed/comms/and/commsdsl -DCC_ASN1_BUILD_APPS=ON -DCC_ASN1_BUILD_UNIT_TESTS=ON
+$> cmake .. -DCMAKE_INSTALL_PREFIX=./install \
+    -DCMAKE_PREFIX_PATH=/path/to/installed/comms/and/commsdsl \
+    -DCC_ASN1_BUILD_APPS=ON -DCC_ASN1_BUILD_UNIT_TESTS=ON
 $> cmake --build . --target install
 ```
 
@@ -45,24 +47,24 @@ Note, that in case the protocol being defined has its own code snippets, that th
 The [tutorial23](https://github.com/commschamp/cc_tutorial/tree/master/tutorials/tutorial23) in the tutorial
 project explains how multiple schemas with different names can be used in the protocol definition.
 
-There is main [dsl/schema.xml](dsl/schema.xml) file which contains all the available ASN.1 encodings. Definitions
-inside this schema can be **&lt;ref&gt**-erenced directly. The consequence might be having having extra
+There is main [cc_asn1/dsl/schema.xml](cc_asn1/dsl/schema.xml) file which contains all the available ASN.1 encodings. Definitions
+inside this schema can be **&lt;ref&gt;**-erenced directly. The consequence might be having having extra
 "cc_asn1" namespace and extra include files.
 
-There is also secondary [dsl/emb_schema.xml](dsl/emb_schema.xml) which doesn't specify any name it its
+There is also secondary [cc_asn1/dsl/emb_schema.xml](cc_asn1/dsl/emb_schema.xml) which doesn't specify any name it its
 **&lt;schema&gt;** node and intended to be embedded into the actual protocol definition. It
-**resuse**-s all the definitions from the [dsl/schema.xml](dsl/schema.xml) instead of
+**resuse**-s all the definitions from the [cc_asn1/dsl/schema.xml](cc_asn1/dsl/schema.xml) instead of
 **&lt;ref&gt;**-erencing them, resulting in _copying_ all the ASN.1 definitions into the
 defined protocol namespace.
 
-In order to use secondary [dsl/emb_schema.xml](dsl/emb_schema.xml) the protocol definition needs to
+In order to use secondary [cc_asn1/dsl/emb_schema.xml](cc_asn1/dsl/emb_schema.xml) the protocol definition needs to
 be split into at least 2 schema definition files and they need to be processed by the code
 generator(s) in the order specified below:
 
-- [dsl/schema.xml](dsl/schema.xml) - Main definitions of this project
+- [cc_asn1/dsl/schema.xml](cc_asn1/dsl/schema.xml) - Main definitions of this project
 - main protocol **&lt;schema&gt;** defining new **name** property.
-- [dsl/emb_schema.xml](dsl/emb_schema.xml) - Secondary schema of this project to copy all the main schema definition into the protocol namespace
-- rest of the protocol **&lt;schema&gt;** definition referencing fields in [dsl/emb_schema.xml](dsl/emb_schema.xml).
+- [cc_asn1/dsl/emb_schema.xml](cc_asn1/dsl/emb_schema.xml) - Secondary schema of this project to copy all the main schema definition into the protocol namespace
+- rest of the protocol **&lt;schema&gt;** definition referencing fields in [cc_asn1/dsl/emb_schema.xml](cc_asn1/dsl/emb_schema.xml).
 
 All the ASN.1 fields need to be encoded as **TLV** (tag-length-value) triplets. They are defined as
 **&lt;bundle&gt;** with `Tag`, `Length`, and `Value` fields:
@@ -104,11 +106,11 @@ DER is implemented and the instructions below is for DER.
 ## Using BOOLEAN
 Using ASN.1 **BOOLEAN** field can be done by referencing **@cc_asn1.der.Boolean** field in external schema
 (in case of having **cc_asn1** namespace and extra source files is not a problem) or
-referencing **asn1.der.Boolean** in case of [emb_schema.xml](dsl/emb_schema.xml) is used and
+referencing **asn1.der.Boolean** in case of [emb_schema.xml](cc_asn1/dsl/emb_schema.xml) is used and
 all the ASN.1 definitions need to be copied into the defined protocol namespace (but into
 **asn1** second level namespace).
 
-All the subsequent examples will assume that [emb_schema.xml](dsl/emb_schema.xml) is in use and will
+All the subsequent examples will assume that [emb_schema.xml](cc_asn1/dsl/emb_schema.xml) is in use and will
 reference fields in the embedded **asn1** namespace.
 
 ```xml
@@ -161,12 +163,12 @@ operation is expected to fail when the length exceeds 8 bytes, making the constr
     ...
 </variant>
 ```
-In the example above `ShortInt` takes precedence and created when encountered, but it's **read** operation fails in case the
+In the example above `ShortInt` takes precedence and created when encountered, but its **read** operation fails in case the
 length is 9 or more bytes, resulting in construction of the `LongInt` instead.
 
 ## Defining BIT STRING
 In cases when the actual **BIT STRING** value is expected to be no greater than 64 bits, the `BitString` definition
-is expected to be **reuse**-d and its `Value` field is replaced with proper **&lt;set&gt** field definition.
+is expected to be **reuse**-d and its `Value` field is replaced with proper **&lt;set&gt&** field definition.
 ```xml
 <bundle name="MyBitstring" reuse="asn1.der.BitString">
     <replace>
@@ -179,7 +181,7 @@ is expected to be **reuse**-d and its `Value` field is replaced with proper **&l
 ```
 Note the usage of **&lt;replace&gt;** node to replace the provided dummy definition of the `Value` field with the
 new one relevant to the protocol being defined. Such replacement can be done for any fields, including ones
-described above (**BOOLEAN** and **INTEGER**). It can be used when some **&lt;special&gt;** values need to be
+described above (**BOOLEAN** and **INTEGER**). It can be useful when some **&lt;special&gt;** values need to be
 added to the `Value` definition.
 
 In case when **BIT STRING** type is used to define any arbitrary long data field the `RawBitString` is expected to be
@@ -190,7 +192,7 @@ used instead. It's `Value` field is defined as:
 It's up to the client code to implement a wrapper and provide a convenient access to specific bit if necessary.
 
 Similar to the **INTEGER** case described above there is also `BitStringStrict` when can be used in conjunction with
-`RawBitString` when the short form is preferred when applicable but substitution long form should also be available.
+`RawBitString` when the short form is preferred when applicable but substitution with long form should also be available.
 
 There is another important aspect to the **BIT STRING**. Its binary encoding has special `Shift` prefix byte.
 ```xml
@@ -231,7 +233,7 @@ bundling / un-bundling is performed during the **write** / **read** operations o
 doesn't need to worry about such unification.
 
 ## Defining SEQUENCE
-In order to define a **SEQUENCE** the provided `Sequence` field is expected to be **reuse**-d and its
+In order to define a **SEQUENCE**, the provided `Sequence` field is expected to be **reuse**-d and its
 `Value` field is expected to be replaced with another **&lt;bundle&gt;** containing all the necessary fields:
 ```xml
 <bundle name="MySequence" reuse="asn1.der.Sequence">
@@ -247,10 +249,16 @@ In order to define a **SEQUENCE** the provided `Sequence` field is expected to b
 ```
 
 In case of **SEQUENCE OF**, the `Value` member needs to be replaced with a **&lt;list&gt;** rather
-than a **&lt;bundle&gt;**. The schema also provides `SequenceOf` field which the same as `Sequence`, but
+than a **&lt;bundle&gt;**. The schema also provides `SequenceOf` field which is the same as `Sequence`, but
 uses a dummy **&lt;list&gt;** as its `Value`.
 ```xml
-<bundle name="MySequenceOf" reuse="asn1.der.SequenceOf">
+<bundle name="MySimpleSequenceOf" reuse="asn1.der.SequenceOf">
+    <replace>
+        <list name="Value" element="asn1.der.Integer" />
+    </replace>
+</bundle>
+
+<bundle name="MyComplexSequenceOf" reuse="asn1.der.SequenceOf">
     <replace>
         <list name="Value">
             <bundle name="Element">
@@ -265,7 +273,7 @@ uses a dummy **&lt;list&gt;** as its `Value`.
 ```
 
 ## Defining SET
-In order to define a **SET** the provided `Set` field is expected to be **reuse**-d and its
+In order to define a **SET**, the provided `Set` field is expected to be **reuse**-d and its
 `Value` field is expected to be replaced with a **&lt;list&gt;** of **&lt;variant&gt;** field,
 which defines all the possible member types
 ```xml
@@ -284,10 +292,18 @@ which defines all the possible member types
 ```
 **IMPORTANT**: The elements inside the **&lt;variant&gt;** field are expected to be in the **ascending** order of the tags.
 
-**ALSO IMPORTANT**: The **SET** field must serialize its elements in the ascending orders, i.e. elements must be sorted before
-the field is serialized. However, it is impractical to depend putting the elements into the `Value` list in the right order.
-It means that the field needs to be **refresh**-ed before the **write** operation happens. The **refresh** operation will perform
+**ALSO IMPORTANT**: The **SET** field must serialize its elements in the ascending order, i.e. elements must be sorted before
+the field is serialized. However, it is impractical to depend on the client code putting the elements into the `Value` list in
+the right order. It creates error-prone boilerplate code.
+It means that the field needs to be **refresh**-ed before the **write** operation takes place. The **refresh** operation will perform
 the required sorting.
+```cpp
+mySet.field_value().value().resize(3);
+mySet.field_value().value[0].initField_f3().field_value().value() = "hello";
+mySet.field_value().value[1].initField_f2().field_value().value() = 1234;
+mySet.field_value().value[2].initField_f1().field_value().setTrue();
+mySet.refresh(); // Sorts the mySet.field_value().value() vector - new order will be f1, f2, f3.
+```
 
 The definition of the **SET OF** field is very similar with the list element being a non-**&lt;variant&gt;** one.
 ```xml
@@ -297,19 +313,8 @@ The definition of the **SET OF** field is very similar with the list element bei
     </replace>
 </bundle>
 ```
-Another example of the **SET OF**:
-```xml
-<bundle name="MySet" reuse="asn1.der.Set">
-    <replace>
-        <list name="Value">
-            <bundle name="Element">
-                <ref name="F1" field="asn1.der.Boolean" />
-                <ref name="F2" field="asn1.der.Integer" />
-            </bundle>
-        </list>
-    </replace>
-</bundle>
-```
+Due to the fact that every element in the list has the same tag, the sorting
+during the **refresh** functionality is performed using their serialized values, not their tags.
 
 ## Optional Fields
 The ASN.1 allows having **OPTIONAL** fields which can be present or missing. In order to
@@ -324,7 +329,7 @@ in case the wrong tag is encountered. Instead it marks the **&lt;optional&gt;** 
 
 The ASN.1 also allows having **DEFAULT** values, which are **OPTIONAL** and are expected **NOT** to be
 serialized when the fields have their default values. The definition of such a field is expected to
-has a custom **valid** check functionality reporting its **default** value to be **invalid**. Also
+have a custom **valid** check functionality reporting its **default** value to be **invalid**. Also
 another **missingOnInvalid** property (in addition to **missingOnReadFail**) needs to be set to true.
 The **missingOnInvalid** property insures that the **&lt;optional&gt;** field is marked as
 "missing" during the **refresh** operation when its value is invalid (happens when it's default).
@@ -386,7 +391,17 @@ leaving only `Value` for replacement.
 ```
 
 # Examples
+Below is a list of available examples that use definitions from this project to define
+their own data structures.
 
 - [cc.x509.commsdsl](https://github.com/commschamp/cc.x509.commsdsl) - Contains definition of the
   [X.509](https://datatracker.ietf.org/doc/html/rfc5280) public key infrastructure certificate.
 
+# License
+Please read [License](https://github.com/commschamp/commsdsl#license)
+section from [commsdsl](https://github.com/commschamp/commsdsl) project.
+
+# Contact Information
+For bug reports, feature requests, or any other question you may open an issue
+here in **github** or e-mail me directly to: **arobenko@gmail.com**. I usually
+respond within 24 hours.
