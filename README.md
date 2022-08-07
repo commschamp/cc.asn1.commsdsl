@@ -51,7 +51,7 @@ There is main [cc_asn1/dsl/schema.xml](cc_asn1/dsl/schema.xml) file which contai
 inside this schema can be **&lt;ref&gt;**-erenced directly. The consequence might be having having extra
 "cc_asn1" namespace and extra include files.
 
-There is also secondary [cc_asn1/dsl/emb_schema.xml](cc_asn1/dsl/emb_schema.xml) which doesn't specify any name it its
+There is also secondary [cc_asn1/dsl/emb_schema.xml](cc_asn1/dsl/emb_schema.xml) which doesn't specify any name in its
 **&lt;schema&gt;** node and intended to be embedded into the actual protocol definition. It
 **resuse**-s all the definitions from the [cc_asn1/dsl/schema.xml](cc_asn1/dsl/schema.xml) instead of
 **&lt;ref&gt;**-erencing them, resulting in _copying_ all the ASN.1 definitions into the
@@ -91,8 +91,8 @@ someBoolField.field_value().setTrue(); // Uses generated special value functions
 someIntField.field_value().value() = 1234; // Sets value directly
 ```
 
-Also note that the second `Length` value needs to be updated. It is performed automatically by
-invoking the **refresh** functionality after setting the value. It is recommended to invoke
+Also note that the value of the second field `Length` needs to be updated. It is performed automatically by
+invoking the **refresh** functionality after updating the `Value`. It is recommended to invoke
 it one time on the root field/message object when all the values are set.
 ```cpp
 msg.someIntField().field_value().value() = 1234;
@@ -168,7 +168,7 @@ length is 9 or more bytes, resulting in construction of the `LongInt` instead.
 
 ## Defining BIT STRING
 In cases when the actual **BIT STRING** value is expected to be no greater than 64 bits, the `BitString` definition
-is expected to be **reuse**-d and its `Value` field is replaced with proper **&lt;set&gt&** field definition.
+is expected to be **reuse**-d and its `Value` field is replaced with proper **&lt;set&gt;** field definition.
 ```xml
 <bundle name="MyBitstring" reuse="asn1.der.BitString">
     <replace>
@@ -391,7 +391,7 @@ leaving only `Value` for replacement.
 ```
 
 # Examples
-Below is a list of available examples that use definitions from this project to define
+Below is a list of available examples that use definition of ASN.1 fields from this project to define
 their own data structures.
 
 - [cc.x509.commsdsl](https://github.com/commschamp/cc.x509.commsdsl) - Contains definition of the
