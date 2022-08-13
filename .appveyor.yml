@@ -49,7 +49,7 @@ build_script:
     - echo ------------------------- Building Project -------------------------
     - cd %BUILD_DIR%
     - cmake .. -DCMAKE_BUILD_TYPE=%CONFIGURATION% -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX="%COMMON_INSTALL_DIR%" -DCMAKE_PREFIX_PATH="%COMMON_INSTALL_DIR%" -DCMAKE_CXX_STANDARD=%CPP_STD% -DCC_ASN1_BUILD_APPS=ON -DCC_ASN1_BUILD_UNIT_TESTS=ON
-    - cmake --build . --target install
+    - cmake --build . --config %CONFIGURATION% --target install
 
 
 

@@ -39,11 +39,6 @@ set COMMSDSL_BUILD_DIR=%BUILD_DIR%/externals/commsdsl/build
 set COMMSDSL_INSTALL_DIR=%COMMSDSL_BUILD_DIR%/install
 if NOT [%COMMON_INSTALL_DIR%] == [] set COMMSDSL_INSTALL_DIR=%COMMON_INSTALL_DIR%
 
-set CC_TOOLS_QT_SRC_DIR=%EXTERNALS_DIR%/cc_tools_qt
-set CC_TOOLS_QT_BUILD_DIR=%BUILD_DIR%/externals/cc_tools_qt/build
-set CC_TOOLS_QT_INSTALL_DIR=%CC_TOOLS_QT_BUILD_DIR%/install
-if NOT [%COMMON_INSTALL_DIR%] == [] set CC_TOOLS_QT_INSTALL_DIR=%COMMON_INSTALL_DIR%
-
 rem ----------------------------------------------------
 
 mkdir "%EXTERNALS_DIR%"
