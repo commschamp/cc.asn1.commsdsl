@@ -21,6 +21,9 @@ option (CC_ASN1_TEST_BUILD_DOC "Build documentation target in generated projects
 
 ################################################
 
+set (CC_ASN1_VERSION "0.2")
+set (CC_ASN1_MIN_COMMSDSL_VERSION "6.3")
+
 if (NOT CC_ASN1_EXTERNALS_DIR)
     set (CC_ASN1_EXTERNALS_DIR "${PROJECT_SOURCE_DIR}/externals")
 endif ()

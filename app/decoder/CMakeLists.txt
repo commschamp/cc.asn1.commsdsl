@@ -4,6 +4,11 @@ endif ()
 
 find_program(COMMSDSL2COMMS_EXE "commsdsl2comms" PATH_SUFFIXES bin REQUIRED)
 
+execute_process(COMMAND "${COMMSDSL2COMMS_EXE}" --version OUTPUT_VARIABLE commsdsl2comms_version)
+if ("${commsdsl2comms_version}" VERSION_LESS "${CC_ASN1_MIN_COMMSDSL_VERSION}")
+    message (FATAL_ERROR "Version of commsdsl2comms is too old, required minimum is v${CC_ASN1_MIN_COMMSDSL_VERSION}.")
+endif ()
+
 set (name "cc_asn1_decoder")
 set (asn1_schema ${PROJECT_SOURCE_DIR}/cc_asn1/dsl/schema.xml)
 file (GLOB app_schema_files dsl/*.xml)
@@ -32,7 +37,8 @@ add_custom_target(${name}_rm_tmp_tgt
 add_custom_command(
     OUTPUT ${output_dir}.tmp
     DEPENDS ${schema_files} ${name}_rm_tmp_tgt
-    COMMAND ${COMMSDSL2COMMS_EXE} -d -s --warn-as-err -o ${output_dir}.tmp ${code_input_param} ${schema_files}
+    COMMAND ${COMMSDSL2COMMS_EXE} -V ${CC_ASN1_VERSION} -d -s --warn-as-err 
+        -o ${output_dir}.tmp ${code_input_param} ${schema_files}
 )
 
 set (output_tgt ${name}_output_tgt)
