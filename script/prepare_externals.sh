@@ -14,6 +14,8 @@
 # COMMON_INSTALL_DIR - (Optional) Common directory to perform installations
 # COMMON_BUILD_TYPE - (Optional) CMake build type
 # COMMON_CXX_STANDARD - (Optional) CMake C++ standard
+# COMMON_CMAKE_GENERATOR - (Optional) CMake generator
+# COMMON_CMAKE_PLATFORM - (Optional) CMake platform
 
 #####################################
 
@@ -79,8 +81,10 @@ function build_comms() {
     if [ -e ${COMMS_SRC_DIR}/.git ]; then
         echo "Updating COMMS library..."
         cd ${COMMS_SRC_DIR}
-        git pull
+        git fetch --all
+        git checkout .
         git checkout ${COMMS_TAG}
+        git pull --all
     else
         echo "Cloning COMMS library..."
         mkdir -p ${EXTERNALS_DIR}
@@ -89,7 +93,10 @@ function build_comms() {
 
     echo "Building COMMS library..."
     mkdir -p ${COMMS_BUILD_DIR}
-    cmake -S ${COMMS_SRC_DIR} -B ${COMMS_BUILD_DIR} -DCMAKE_INSTALL_PREFIX=${COMMS_INSTALL_DIR} -DCMAKE_BUILD_TYPE=${COMMON_BUILD_TYPE} -DCMAKE_CXX_STANDARD=${COMMON_CXX_STANDARD}
+    cmake \
+        ${COMMON_CMAKE_GENERATOR:+"-G ${COMMON_CMAKE_GENERATOR}"} ${COMMON_CMAKE_PLATFORM:+"-A ${COMMON_CMAKE_PLATFORM}"} \
+        -S ${COMMS_SRC_DIR} -B ${COMMS_BUILD_DIR} -DCMAKE_INSTALL_PREFIX=${COMMS_INSTALL_DIR} \
+        -DCMAKE_BUILD_TYPE=${COMMON_BUILD_TYPE} -DCMAKE_CXX_STANDARD=${COMMON_CXX_STANDARD}
     cmake --build ${COMMS_BUILD_DIR} --config ${COMMON_BUILD_TYPE} --target install ${procs_param}
 }
 
@@ -97,8 +104,10 @@ function build_commsdsl() {
     if [ -e ${COMMSDSL_SRC_DIR}/.git ]; then
         echo "Updating commsdsl..."
         cd ${COMMSDSL_SRC_DIR}
-        git pull
+        git fetch --all
+        git checkout .
         git checkout ${COMMSDSL_TAG}
+        git pull --all
     else
         echo "Cloning commsdsl ..."
         mkdir -p ${EXTERNALS_DIR}
@@ -107,7 +116,11 @@ function build_commsdsl() {
 
     echo "Building commsdsl ..."
     mkdir -p ${COMMSDSL_BUILD_DIR}
-    CC=${CC_COMMSDSL} CXX=${CXX_COMMSDSL} cmake -S ${COMMSDSL_SRC_DIR} -B ${COMMSDSL_BUILD_DIR} -DCMAKE_INSTALL_PREFIX=${COMMSDSL_INSTALL_DIR} -DCMAKE_BUILD_TYPE=${COMMON_BUILD_TYPE} -DCOMMSDSL_INSTALL_LIBRARY=OFF
+    CC=${CC_COMMSDSL} CXX=${CXX_COMMSDSL} cmake \
+        -S ${COMMSDSL_SRC_DIR} -B ${COMMSDSL_BUILD_DIR} \
+        -DCMAKE_INSTALL_PREFIX=${COMMSDSL_INSTALL_DIR} -DCMAKE_BUILD_TYPE=${COMMON_BUILD_TYPE} \
+        -DCOMMSDSL_INSTALL_LIBRARY=OFF -DCOMMSDSL_BUILD_COMMSDSL2TEST=ON \
+        -DCOMMSDSL_BUILD_COMMSDSL2SWIG=ON -DCOMMSDSL_BUILD_COMMSDSL2EMSCRIPTEN=ON
     cmake --build ${COMMSDSL_BUILD_DIR} --config ${COMMON_BUILD_TYPE} --target install ${procs_param}
 }
 
