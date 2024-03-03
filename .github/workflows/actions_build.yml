@@ -4,7 +4,7 @@ on: [push]
 
 env:
   COMMS_BRANCH: v5.2.2
-  COMMSDSL_BRANCH: develop
+  COMMSDSL_BRANCH: v6.3
 
 jobs:
   build_gcc_old_ubuntu_20_04:

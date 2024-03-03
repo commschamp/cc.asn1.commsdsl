@@ -18,7 +18,7 @@ configuration:
 
 environment:
     COMMS_BRANCH: v5.2.2
-    COMMSDSL_BRANCH: develop
+    COMMSDSL_BRANCH: v6.3
     matrix:
         - CPP_STD: 11
         - CPP_STD: 14
