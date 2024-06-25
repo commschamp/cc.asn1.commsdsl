@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.1)
 project ("cc_asn1")
 
 option (CC_ASN1_WARN_AS_ERR "Treat warning as error" ON)
-option (CC_ASN1_USE_CCACHE "Use ccache on UNIX systems if it's available" ON)
+option (CC_ASN1_USE_CCACHE "Use ccache" OFF)
 option (CC_ASN1_BUILD_APPS "Build applications." OFF)
 option (CC_ASN1_BUILD_UNIT_TESTS "Build unittests." OFF)
 option (CC_ASN1_VALGRIND_TESTS "Enable testing with valgrind (applicable when CC_ASN1_BUILD_UNIT_TESTS is on)" OFF)
@@ -12,6 +12,7 @@ option (CC_ASN1_TEST_BUILD_DOC "Build documentation target in generated projects
 # Additional variables to be used if needed
 # ---------------------------
 # CC_ASN1_EXTERNALS_DIR - Directory to contain sources for external projects, defaults to ${PROJECT_SOURCE_DIR}/externals.
+# CC_ASN1_CCACHE_EXECUTABLE - Custom ccache executable
 
 # Other built-in CMake variables that can be used
 # ---------------------------
@@ -34,17 +35,19 @@ set (CMAKE_SCIPTS_DIR "${PROJECT_SOURCE_DIR}/cmake")
 include (${CMAKE_SCIPTS_DIR}/Asn1Compile.cmake)
 
 # Compiler options
-set (warn_opt)
+set (extra_opts)
 if (CC_ASN1_WARN_AS_ERR)
-    set (warn_opt WARN_AS_ERR)
+    list (APPEND extra_opts WARN_AS_ERR)
 endif ()
 
-set (ccache_opt)
-if ((UNIX) AND (CC_ASN1_USE_CCACHE))
-    set (ccache_opt USE_CCACHE)
+if (CC_ASN1_USE_CCACHE)
+    list (APPEND extra_opts USE_CCACHE)
+    if (NOT "${CC_ASN1_CCACHE_EXECUTABLE}" STREQUAL "")
+        list (APPEND extra_opts CCACHE_EXECTUABLE "${CC_ASN1_CCACHE_EXECUTABLE}")
+    endif ()  
 endif ()
 
-cc_asn1_compile(${warn_opt} ${ccache_opt})
+cc_asn1_compile(${extra_opts})
 cc_asn1_msvc_force_warn_opt("/W4")
 
 set (CC_ASN1_FOUND_COMMS_INTERNAL OFF CACHE INTERNAL "Mark COMMS library found" FORCE)
