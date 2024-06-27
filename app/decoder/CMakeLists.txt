@@ -49,8 +49,8 @@ add_custom_target(${output_tgt} ALL
     DEPENDS ${output_dir}.tmp "${PROJECT_SOURCE_DIR}/cmake/CopyGenerated.cmake" ${schema_files})
 
 
-set (build_dir ${output_dir}/build)
-set (install_dir ${build_dir}/install)
+set (build_dir ${CMAKE_CURRENT_BINARY_DIR}/protocol_build)
+set (install_dir ${CMAKE_CURRENT_BINARY_DIR}/protocol_install)
 
 execute_process (
     COMMAND ${CMAKE_COMMAND} -E make_directory "${build_dir}")
