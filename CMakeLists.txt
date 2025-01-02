@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.10)
 project ("cc_asn1")
 
 option (CC_ASN1_WARN_AS_ERR "Treat warning as error" ON)
@@ -22,8 +22,8 @@ option (CC_ASN1_TEST_BUILD_DOC "Build documentation target in generated projects
 
 ################################################
 
-set (CC_ASN1_VERSION "0.3.2")
-set (CC_ASN1_MIN_COMMSDSL_VERSION "6.3.4")
+set (CC_ASN1_VERSION "0.4")
+set (CC_ASN1_MIN_COMMSDSL_VERSION "7.0")
 
 if ("${CMAKE_CXX_STANDARD}" STREQUAL "")
     set(CMAKE_CXX_STANDARD 17)

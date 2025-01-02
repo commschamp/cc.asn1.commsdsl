@@ -299,9 +299,9 @@ It means that the field needs to be **refresh**-ed before the **write** operatio
 the required sorting.
 ```cpp
 mySet.field_value().value().resize(3);
-mySet.field_value().value[0].initField_f3().field_value().value() = "hello";
-mySet.field_value().value[1].initField_f2().field_value().value() = 1234;
-mySet.field_value().value[2].initField_f1().field_value().setTrue();
+mySet.field_value().value()[0].initField_f3().field_value().value() = "hello";
+mySet.field_value().value()[1].initField_f2().field_value().value() = 1234;
+mySet.field_value().value()[2].initField_f1().field_value().setTrue();
 mySet.refresh(); // Sorts the mySet.field_value().value() vector - new order will be f1, f2, f3.
 ```
 
