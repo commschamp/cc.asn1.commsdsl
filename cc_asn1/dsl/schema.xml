@@ -71,7 +71,7 @@
             <validValue name="ExplicitContext15" val="0xAF" />                                        
         </enum>
 
-        <int name="TagByte" type="uint8" failOnInvalid="true" />
+        <int name="TagByte" type="uint8" failOnInvalid="true" fixedValue="true" />
 
         <string name="PrintableStringVal" validOverride="replace" />
 
