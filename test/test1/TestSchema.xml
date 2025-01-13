@@ -55,7 +55,7 @@
     </message>        
 
     <message name="Msg5" id="MsgId.M5">
-        <bundle name="Set" reuse="@cc_asn1.der.Set" copyCodeFrom="@cc_asn1.der.Set">
+        <bundle name="Set" reuse="@cc_asn1.der.Set" reuseCode="true">
             <replace>
                 <list name="Value">
                     <variant name="Element">
@@ -69,7 +69,7 @@
     </message>        
 
     <message name="Msg6" id="MsgId.M6">
-        <bundle name="Set" reuse="@cc_asn1.der.Set" copyCodeFrom="@cc_asn1.der.Set">
+        <bundle name="Set" reuse="@cc_asn1.der.Set" reuseCode="true">
             <replace>
                 <list name="Value">
                     <ref field="@cc_asn1.der.Ia5String" name="Element" />
@@ -79,7 +79,7 @@
     </message>     
 
     <message name="Msg7" id="MsgId.M7">
-        <bundle name="BitString" reuse="@cc_asn1.der.BitString" copyCodeFrom="@cc_asn1.der.BitString">
+        <bundle name="BitString" reuse="@cc_asn1.der.BitString" reuseCode="true">
             <replace>
                 <set name="Value" length="8" availableLengthLimit="true">
                     <bit name="B0" idx="0" />

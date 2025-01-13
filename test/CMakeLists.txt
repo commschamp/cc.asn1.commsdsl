@@ -22,23 +22,14 @@ function (test_func name)
         set (code_input_param -c ${asn1_code_input_dir})
     endif()
 
-    set (rm_tmp_tgt ${name}_rm_tmp_tgt)
-    add_custom_target(${rm_tmp_tgt}
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${output_dir}.tmp
-    )
-
-    add_custom_command(
-        OUTPUT ${output_dir}.tmp
-        DEPENDS ${schema_files} ${rm_tmp_tgt}
-        COMMAND ${COMMSDSL2COMMS_EXE} -d -s --warn-as-err -o ${output_dir}.tmp ${code_input_param} ${schema_files}
-    )
-
     set (output_tgt ${name}_output_tgt)
     add_custom_target(${output_tgt} ALL
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${output_dir}.tmp
+        COMMAND ${COMMSDSL2COMMS_EXE} -d -s --warn-as-err -o ${output_dir}.tmp ${code_input_param} ${schema_files}
         COMMAND ${CMAKE_COMMAND}
             -DGENERATED="${output_dir}.tmp" -DOUTPUT="${output_dir}" -DCLEANUP_DIRS="doc;include" 
             -P "${PROJECT_SOURCE_DIR}/cmake/CopyGenerated.cmake"
-        DEPENDS ${output_dir}.tmp "${PROJECT_SOURCE_DIR}/cmake/CopyGenerated.cmake" ${schema_files})
+        DEPENDS "${PROJECT_SOURCE_DIR}/cmake/CopyGenerated.cmake" ${schema_files})
 
 
     set (build_tgt ${name}_build_tgt)

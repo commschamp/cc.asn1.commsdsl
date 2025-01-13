@@ -53,7 +53,7 @@ inside this schema can be **&lt;ref&gt;**-erenced directly. The consequence migh
 
 There is also secondary [cc_asn1/dsl/emb_schema.xml](cc_asn1/dsl/emb_schema.xml) which doesn't specify any name in its
 **&lt;schema&gt;** node and intended to be embedded into the actual protocol definition. It
-**resuse**-s all the definitions from the [cc_asn1/dsl/schema.xml](cc_asn1/dsl/schema.xml) instead of
+**reuse**-s all the definitions from the [cc_asn1/dsl/schema.xml](cc_asn1/dsl/schema.xml) instead of
 **&lt;ref&gt;**-erencing them, resulting in _copying_ all the ASN.1 definitions into the
 defined protocol namespace.
 
@@ -299,9 +299,9 @@ It means that the field needs to be **refresh**-ed before the **write** operatio
 the required sorting.
 ```cpp
 mySet.field_value().value().resize(3);
-mySet.field_value().value[0].initField_f3().field_value().value() = "hello";
-mySet.field_value().value[1].initField_f2().field_value().value() = 1234;
-mySet.field_value().value[2].initField_f1().field_value().setTrue();
+mySet.field_value().value()[0].initField_f3().field_value().value() = "hello";
+mySet.field_value().value()[1].initField_f2().field_value().value() = 1234;
+mySet.field_value().value()[2].initField_f1().field_value().setTrue();
 mySet.refresh(); // Sorts the mySet.field_value().value() vector - new order will be f1, f2, f3.
 ```
 
