@@ -22,7 +22,7 @@ option (CC_ASN1_TEST_BUILD_DOC "Build documentation target in generated projects
 
 ################################################
 
-set (CC_ASN1_VERSION "0.4.1")
+set (CC_ASN1_VERSION "0.4.2")
 set (CC_ASN1_MIN_COMMSDSL_VERSION "7.1")
 
 if ("${CMAKE_CXX_STANDARD}" STREQUAL "")
